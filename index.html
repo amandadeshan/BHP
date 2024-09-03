@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>OT Calculation</title>
     <style>
-        /* Background Animation */
+        /* Add your CSS styles here */
         body {
             font-family: Arial, sans-serif;
             margin: 0;
@@ -250,8 +250,8 @@
         let currentUserData = {}; // To store current user data
 
         const users = {
-            BHP: ['K.P.I. Malkanthi', 'W.D.R.C.Wijesiri','A.M.R.T.Atapaththu','N.M.R.Abeynayaka','J.M.C.N.Jayasunara','K.M.Nihal','M.R.Ansifa','W.M.S.R.Rajapaksha','M.J.J.E.N.Abdul','A.M.M.A.A.L. Ali','N.M.L.M.A. Ahamed','I.M.S.S. Jiffry','S.S. Banu','P.K.M.A.D.M.M.Qudus','A.M.A.S.A.L. Alif','M.L.K. Muralidaran','R.M.H.M.M. Sadath','N.M.A. R.A. Faiz','N.M.A.A.F. Alams','K.A. K.M.Nasath','M.L.A.M.K. Amaraweera','D.M.A.L. Ahamed','S.S.H. Ghouse','W.A. Tharushan','A.M.I. Azam','M.A.S.I. Hisham','A.A. Ishanka','S.M.A. Ahamed','W.M.A.R.A. Siraj','A.M.S.I.A.S. Amil','N.M.H. Rathna','M.A.L.A. Jiffry'],
-            MLT: Array.from({ length: 30 }, (_, i) => `User${i + 1}`)
+            BHP: ['K.P.I. Malkanthi', 'W.D.R.C.Wijesiri','A.M.R.T.Atapaththu','N.M.R.Abeynayaka','J.M.C.N.Jayasunara','K.M.N.D.Sarath','N.M.T.M.Bhathiya','D.M.R. K.M.S.C. Tharushka','K.M.I. M. S.M.B. Sadik','K.A.C.P. M.M.M. Rihal','M.S.K. A.M.A.A.Jiffry','P.R.M. M.D.R. Rameez','K.M.I. M. N.M.Sujan','A.M.M.A. F. Azad','K.P.D. W.P. W.L.A.Saheer','D.M.S.M. D.Sarath','A.M.M.A.K. Tharshan','K.M.I. M. F.M.Aziz','A.M.M.A. K.H.M.Ahamed'],
+            MLT: ['J.E.N.Abdul','A.M.M.A.A.L. Ali','N.M.L.M.A. Ahamed','I.M.S.S. Jiffry','S.S. Banu','P.K.M.A.D.M.M.Qudus','A.M.A.S.A.L. Alif','M.L.K. Muralidaran','R.M.H.M.M. Sadath','N.M.A. R.A. Faiz','N.M.A.A.F. Alams','K.A. K.M.Nasath','M.L.A.M.K. Amaraweera','D.M.A.L. Ahamed','S.S.H. Ghouse','W.A. Tharushan','A.M.I. Azam','M.A.S.I. Hisham','A.A. Ishanka','S.M.A. Ahamed','W.M.A.R.A. Siraj','A.M.S.I.A.S. Amil','N.M.H. Rathna','M.A.L.A. Jiffry'],
         };
 
         function showUsers() {
@@ -261,6 +261,7 @@
             const userTable = document.getElementById('userTable');
             const tableHeader = document.getElementById('tableHeader');
             const tableBody = document.getElementById('tableBody');
+
             userList.innerHTML = '';
             tableBody.innerHTML = '';
 
@@ -277,13 +278,12 @@
                 userList.appendChild(userBox);
             });
 
-            document.getElementById('userTable').style.display = 'none';
             tableHeader.innerText = `User Data for ${department} (${month})`;
+            userTable.style.display = 'none'; // Ensure table is hidden initially
         }
 
         function displayUserTable() {
             if (currentUserBox) {
-                // Example: Add rows to the table with placeholder data
                 const tableBody = document.getElementById('tableBody');
                 tableBody.innerHTML = ''; // Clear previous rows
                 for (let i = 1; i <= 31; i++) { // Assuming max days in a month
@@ -297,7 +297,8 @@
                     `;
                     tableBody.appendChild(row);
                 }
-                document.getElementById('userTable').style.display = 'block';
+                document.getElementById('userTable').style.display = 'block'; // Show table
+                document.getElementById('userList').style.display = 'none'; // Hide user list
             }
         }
 
