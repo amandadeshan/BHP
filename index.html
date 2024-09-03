@@ -250,7 +250,7 @@
         let currentUserData = {}; // To store current user data
 
         const users = {
-            BHP: ['K.P.I. Malkanthi', 'W.D.R.C.Wijesiri','A.M.R.T.Atapaththu','N.M.R.Abeynayaka','J.M.C.N.Jayasunara','K.M.Nihal','M.R.Ansifa','W.M.S.R.Rajapaksha','M.J.J.Mohomed','A.C.Naushad' ,'V.L.S.De Mel','H.M.I.D.Herath','H.P.U.Manjula','M.F.M.Fasarath','L.I.Chandrasekara','J.D.Jegadhalini','H.P.D.P.N.Gunathilaka','S.M.Sacky','R.R.Shareef','D.M.M.Diwakara','H.M.P.Herath','A.M.Arshath'],
+            BHP: ['K.P.I. Malkanthi', 'W.D.R.C.Wijesiri','A.M.R.T.Atapaththu','N.M.R.Abeynayaka','J.M.C.N.Jayasunara','K.M.Nihal','M.R.Ansifa','W.M.S.R.Rajapaksha','M.J.J.E.N.Abdul','A.M.M.A.A.L. Ali','N.M.L.M.A. Ahamed','I.M.S.S. Jiffry','S.S. Banu','P.K.M.A.D.M.M.Qudus','A.M.A.S.A.L. Alif','M.L.K. Muralidaran','R.M.H.M.M. Sadath','N.M.A. R.A. Faiz','N.M.A.A.F. Alams','K.A. K.M.Nasath','M.L.A.M.K. Amaraweera','D.M.A.L. Ahamed','S.S.H. Ghouse','W.A. Tharushan','A.M.I. Azam','M.A.S.I. Hisham','A.A. Ishanka','S.M.A. Ahamed','W.M.A.R.A. Siraj','A.M.S.I.A.S. Amil','N.M.H. Rathna','M.A.L.A. Jiffry'],
             MLT: Array.from({ length: 30 }, (_, i) => `User${i + 1}`)
         };
 
@@ -258,7 +258,11 @@
             const month = document.getElementById('month').value;
             const department = document.getElementById('department').value;
             const userList = document.getElementById('userList');
+            const userTable = document.getElementById('userTable');
+            const tableHeader = document.getElementById('tableHeader');
+            const tableBody = document.getElementById('tableBody');
             userList.innerHTML = '';
+            tableBody.innerHTML = '';
 
             const departmentUsers = users[department] || [];
             departmentUsers.forEach(user => {
@@ -268,11 +272,33 @@
                 userBox.innerText = user;
                 userBox.onclick = function() {
                     currentUserBox = userBox;
+                    displayUserTable();
                 };
                 userList.appendChild(userBox);
             });
 
             document.getElementById('userTable').style.display = 'none';
+            tableHeader.innerText = `User Data for ${department} (${month})`;
+        }
+
+        function displayUserTable() {
+            if (currentUserBox) {
+                // Example: Add rows to the table with placeholder data
+                const tableBody = document.getElementById('tableBody');
+                tableBody.innerHTML = ''; // Clear previous rows
+                for (let i = 1; i <= 31; i++) { // Assuming max days in a month
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${i}</td>
+                        <td>${new Date(2024, 8, i).toLocaleDateString('en-US', { weekday: 'short' })}</td>
+                        <td><input type="text" class="time-input" placeholder="In"></td>
+                        <td><input type="text" class="time-input" placeholder="Out"></td>
+                        <td><input type="text" class="time-input" placeholder="OT"></td>
+                    `;
+                    tableBody.appendChild(row);
+                }
+                document.getElementById('userTable').style.display = 'block';
+            }
         }
 
         function openAddRemoveModal() {
