@@ -5,119 +5,244 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>OT Calculation</title>
     <style>
+        /* Background Animation */
         body {
             font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            color: #333;
         }
-        #userList {
-            display: flex;
-            flex-wrap: wrap;
+        .background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: linear-gradient(135deg, #74ebd5, #acb6e5);
+            animation: gradient 15s ease infinite;
+            background-size: 400% 400%;
+        }
+        @keyframes gradient {
+            0% { background-position: 0% 0%; }
+            50% { background-position: 100% 100%; }
+            100% { background-position: 0% 0%; }
+        }
+        h1 {
+            text-align: center;
+            color: #444;
+            margin: 20px 0;
+        }
+        label {
+            font-weight: bold;
+            margin-right: 10px;
+            color: #333;
+        }
+        select {
+            padding: 10px;
+            margin-right: 20px;
+            border: 1px solid #007bff;
+            border-radius: 4px;
+            background-color: #fff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
         .user-box {
-            border: 1px solid #ccc;
-            padding: 10px;
-            margin: 5px;
+            background-color: #fff;
+            border: 2px solid #007bff;
+            padding: 15px;
+            margin: 10px 5px;
+            border-radius: 8px;
             cursor: pointer;
-            border-radius: 5px;
+            transition: background-color 0.3s, transform 0.3s;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .user-box:hover {
+            background-color: #e7f3ff;
+            transform: scale(1.05);
         }
         .completed {
+            border-color: #28a745;
             background-color: #d4edda;
         }
-        #userTable {
-            display: none;
+        .saved {
+            border-color: #ffc107;
+            background-color: #fff3cd;
         }
         table {
             width: 100%;
             border-collapse: collapse;
+            margin-top: 20px;
+            background-color: #fff;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            overflow: hidden;
         }
         th, td {
             border: 1px solid #ddd;
-            padding: 8px;
-            text-align: left;
+            padding: 10px;
+            text-align: center;
+            color: #333;
         }
         th {
-            background-color: #f2f2f2;
+            background-color: #007bff;
+            color: white;
+        }
+        button {
+            margin-top: 15px;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            font-weight: bold;
+            margin-left: 10px;
+            background-color: #007bff;
+            color: white;
+        }
+        button:hover {
+            background-color: #0056b3;
+            color: #fff;
+        }
+        #userTable {
+            margin-top: 30px;
+            display: none;
+        }
+        #userList {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        #tableHeader {
+            text-align: center;
+            margin-top: 20px;
+            color: #333;
+            font-weight: bold;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.4);
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 600px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .modal-header {
+            padding: 10px;
+            background: #007bff;
+            color: #fff;
+            border-bottom: 1px solid #ddd;
+            font-size: 18px;
+            border-radius: 8px 8px 0 0;
+        }
+        .modal-body {
+            padding: 20px;
+        }
+        .modal-footer {
+            padding: 10px;
+            text-align: right;
+            border-top: 1px solid #ddd;
+        }
+        .user-list-item {
+            margin-bottom: 10px;
         }
         .time-input {
             width: 100px;
-        }
-        #addRemoveModal {
-            display: none;
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: #fff;
-            padding: 20px;
+            text-align: center;
             border: 1px solid #ddd;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border-radius: 4px;
+            padding: 5px;
+            background-color: #fff;
         }
-        #addRemoveModal ul {
-            list-style: none;
-            padding: 0;
-        }
-        #addRemoveModal li {
-            padding: 5px 0;
+        .time-input:focus {
+            outline: none;
+            border-color: #007bff;
+            box-shadow: 0 0 4px rgba(0, 123, 255, 0.2);
         }
     </style>
-    <!-- Firebase App (the core Firebase SDK) -->
-    <script src="https://www.gstatic.com/firebasejs/9.10.0/firebase-app.js"></script>
-    <!-- Firebase Firestore -->
-    <script src="https://www.gstatic.com/firebasejs/9.10.0/firebase-firestore.js"></script>
-    <script>
-        // Your web app's Firebase configuration
-        const firebaseConfig = {
-  apiKey: "AIzaSyAsTV4AJ7PlQgz4emu4ASChNxetbxKwjO4",
-  authDomain: "bhputtlam.firebaseapp.com",
-  projectId: "bhputtlam",
-  storageBucket: "bhputtlam.appspot.com",
-  messagingSenderId: "486977736733",
-  appId: "1:486977736733:web:72008f27c6b5cdceb776f4",
-  measurementId: "G-60VET4K9Y2"
-};
-        
-        // Initialize Firebase
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
-    </script>
 </head>
 <body>
+    <div class="background"></div>
     <h1>OT Calculation</h1>
-    <label for="month">Month:</label>
-    <input type="month" id="month" onchange="showUsers()">
-    
-    <label for="department">Department:</label>
-    <select id="department" onchange="showUsers()">
-        <option value="BHP">BHP</option>
-        <option value="MLT">MLT</option>
-    </select>
-    
-    <button onclick="openAddRemoveModal()">Add/Remove Users</button>
-    
+    <div style="text-align: center;">
+        <label for="month">Select Month:</label>
+        <select id="month" onchange="showUsers()">
+            <option value="01">January</option>
+            <option value="02">February</option>
+            <option value="03">March</option>
+            <option value="04">April</option>
+            <option value="05">May</option>
+            <option value="06">June</option>
+            <option value="07">July</option>
+            <option value="08">August</option>
+            <option value="09">September</option>
+            <option value="10">October</option>
+            <option value="11">November</option>
+            <option value="12">December</option>
+        </select>
+
+        <label for="department">Select Department:</label>
+        <select id="department" onchange="showUsers()">
+            <option value="BHP">BHP</option>
+            <option value="MLT">MLT</option>
+        </select>
+        <button id="addRemoveBtn" onclick="openAddRemoveModal()">Add/Remove</button>
+    </div>
+
     <div id="userList"></div>
-    
+
     <div id="userTable">
-        <h2 id="tableHeader"></h2>
+        <div id="tableHeader"></div>
         <table>
             <thead>
                 <tr>
                     <th>Date</th>
                     <th>Day</th>
-                    <th>In Time</th>
-                    <th>Out Time</th>
-                    <th>OT Hours</th>
+                    <th>In</th>
+                    <th>Out</th>
+                    <th>OT</th>
                 </tr>
             </thead>
             <tbody id="tableBody"></tbody>
         </table>
-        <button onclick="goBack()">Back</button>
-        <button onclick="completeUser()">Complete</button>
+        <div style="text-align: center;">
+            <button onclick="goBack()">Exit Table</button>
+            <button onclick="saveUser()">Save</button>
+            <button onclick="completeUser()">Completed</button>
+        </div>
     </div>
-    
-    <!-- Modal for Add/Remove Users -->
-    <div id="addRemoveModal">
-        <h2>Add/Remove Users</h2>
-        <ul id="addRemoveUserList"></ul>
-        <button onclick="closeAddRemoveModal()">Close</button>
+
+    <!-- Modal -->
+    <div id="addRemoveModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="close" onclick="closeAddRemoveModal()">&times;</span>
+                <h2>Add/Remove Users</h2>
+            </div>
+            <div class="modal-body">
+                <div id="addRemoveUserList"></div>
+            </div>
+            <div class="modal-footer">
+                <button onclick="addUser()">Add</button>
+                <button onclick="removeUser()">Remove</button>
+                <button onclick="closeAddRemoveModal()">Close</button>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -131,56 +256,61 @@
 
         function loadCompletedUsers() {
             const month = document.getElementById('month').value;
-            return db.collection('completedUsers').doc(month).get()
-                .then(doc => doc.exists ? doc.data() : {})
-                .catch(error => {
-                    console.error('Error fetching completed users:', error);
-                    return {};
-                });
+            const completedUsers = JSON.parse(localStorage.getItem('completedUsers')) || {};
+            return completedUsers[month] || {};
         }
 
         function saveCompletedUser(user) {
             const month = document.getElementById('month').value;
             const department = document.getElementById('department').value;
-            db.collection('completedUsers').doc(month).set({
-                [department]: firebase.firestore.FieldValue.arrayUnion(user)
-            }, { merge: true })
-            .then(() => console.log('Completed users successfully saved!'))
-            .catch(error => console.error('Error saving completed users:', error));
+            const completedUsers = loadCompletedUsers();
+            if (!completedUsers[department]) {
+                completedUsers[department] = [];
+            }
+            if (!completedUsers[department].includes(user)) {
+                completedUsers[department].push(user);
+                const allCompletedUsers = JSON.parse(localStorage.getItem('completedUsers')) || {};
+                allCompletedUsers[month] = completedUsers;
+                localStorage.setItem('completedUsers', JSON.stringify(allCompletedUsers));
+            }
             saveUserData(user); // Save data when user is marked as completed
+        }
+
+        function saveUser() {
+            if (currentUserBox) {
+                currentUserBox.classList.add('saved');
+                saveUserData(currentUserBox.dataset.user);
+            }
         }
 
         function saveUserData(user) {
             const month = document.getElementById('month').value;
             const department = document.getElementById('department').value;
-            db.collection('userData').doc(month).set({
-                [department]: {
-                    [user]: currentUserData
-                }
-            }, { merge: true })
-            .then(() => console.log('User data successfully saved!'))
-            .catch(error => console.error('Error saving user data:', error));
+            const userData = JSON.parse(localStorage.getItem('userData')) || {};
+            userData[month] = userData[month] || {};
+            userData[month][department] = userData[month][department] || {};
+            userData[month][department][user] = currentUserData;
+            localStorage.setItem('userData', JSON.stringify(userData));
         }
 
         function showUsers() {
             const department = document.getElementById('department').value;
             const userList = document.getElementById('userList');
             userList.innerHTML = '';
-            loadCompletedUsers().then(completedUsers => {
-                const completedUserList = completedUsers[department] || [];
-                users[department].forEach(user => {
-                    const userBox = document.createElement('div');
-                    userBox.classList.add('user-box');
-                    userBox.innerText = user;
-                    userBox.dataset.user = user;
-                    userBox.onclick = () => showTable(userBox);
+            const completedUsers = loadCompletedUsers()[department] || [];
 
-                    if (completedUserList.includes(user)) {
-                        userBox.classList.add('completed');
-                    }
+            users[department].forEach(user => {
+                const userBox = document.createElement('div');
+                userBox.classList.add('user-box');
+                userBox.innerText = user;
+                userBox.dataset.user = user;
+                userBox.onclick = () => showTable(userBox);
 
-                    userList.appendChild(userBox);
-                });
+                if (completedUsers.includes(user)) {
+                    userBox.classList.add('completed');
+                }
+
+                userList.appendChild(userBox);
             });
         }
 
@@ -201,12 +331,13 @@
                 const formattedDate = date.toISOString().split('T')[0];
 
                 const row = document.createElement('tr');
-                row.innerHTML = 
-                    `<td>${formattedDate}</td>
+                row.innerHTML = `
+                    <td>${formattedDate}</td>
                     <td>${dayOfWeek}</td>
                     <td><input type="text" class="time-input in-time" placeholder="e.g., 08:00 AM" /></td>
                     <td><input type="text" class="time-input out-time" placeholder="e.g., 05:00 PM" /></td>
-                    <td class="ot-hours">0</td>`;
+                    <td class="ot-hours">0</td>
+                `;
                 tableBody.appendChild(row);
             }
 
@@ -237,45 +368,68 @@
 
                 if (hours >= 12) {
                     ampm = 'PM';
-                    if (hours > 12) hours -= 12;
+                    if (hours > 12) hours = (hours - 12).toString();
+                } else if (hours == '00') {
+                    hours = '12';
                 } else {
                     ampm = 'AM';
                 }
 
-                if (hours == 0) hours = 12;
+                if (minutes === undefined) minutes = '';
 
-                this.value = `${hours}:${minutes || '00'} ${ampm}`;
+                if (minutes.length > 2) {
+                    minutes = minutes.substring(0, 2);
+                }
 
-                if (isIn) calculateOTHours();
-                else calculateOTHours();
-            });
-        }
-
-        function calculateOTHours() {
-            const rows = document.querySelectorAll('#tableBody tr');
-            rows.forEach(row => {
-                const inTime = row.querySelector('.in-time').value;
-                const outTime = row.querySelector('.out-time').value;
-
-                if (inTime && outTime) {
-                    const inTimeDate = new Date(`1970-01-01T${convertTo24Hour(inTime)}:00`);
-                    const outTimeDate = new Date(`1970-01-01T${convertTo24Hour(outTime)}:00`);
-                    const otHours = (outTimeDate - inTimeDate) / (1000 * 60 * 60);
-                    row.querySelector('.ot-hours').innerText = otHours.toFixed(2);
+                if (minutes.length === 2 && !isNaN(minutes)) {
+                    this.value = `${hours}:${minutes} ${ampm}`;
+                } else if (minutes.length > 0 && !isNaN(minutes)) {
+                    this.value = `${hours}:${minutes}`;
                 } else {
-                    row.querySelector('.ot-hours').innerText = '0';
+                    this.value = `${hours}`;
+                }
+
+                if (this.value.length === 2 && !this.value.includes(':')) {
+                    this.value += ':';
+                }
+
+                if (this.value.length === 5 && !this.value.includes(' ')) {
+                    this.value += ' ' + ampm;
+                }
+
+                if (this.value.includes(':') && this.value.length === 7 && !this.value.includes(' ')) {
+                    this.value += ' ' + (isIn ? 'AM' : ampm);
+                }
+
+                this.value = this.value.trim();
+
+                if (this.value.includes(':') && this.value.length >= 7 && !this.value.includes(' ')) {
+                    this.value += ' AM'; // Default to AM
                 }
             });
         }
 
-        function convertTo24Hour(timeStr) {
-            const [time, modifier] = timeStr.split(' ');
+        function convertTo24HourFormat(time) {
             let [hours, minutes] = time.split(':');
+            let ampm = '';
 
-            if (modifier === 'PM' && hours !== '12') hours = parseInt(hours) + 12;
-            if (modifier === 'AM' && hours === '12') hours = '00';
+            if (hours) {
+                hours = hours.trim();
+                if (hours.toLowerCase().includes('pm')) {
+                    ampm = 'PM';
+                    hours = hours.replace('PM', '').trim();
+                } else if (hours.toLowerCase().includes('am')) {
+                    ampm = 'AM';
+                    hours = hours.replace('AM', '').trim();
+                }
 
-            return `${hours}:${minutes}`;
+                if (ampm === 'PM' && hours < 12) hours = parseInt(hours) + 12;
+                if (ampm === 'AM' && hours == 12) hours = 0;
+
+                if (hours.length === 1) hours = '0' + hours;
+            }
+
+            return `${hours || '00'}:${minutes || '00'}`;
         }
 
         function goBack() {
@@ -284,30 +438,56 @@
 
         function completeUser() {
             if (currentUserBox) {
-                const user = currentUserBox.dataset.user;
-                saveCompletedUser(user);
                 currentUserBox.classList.add('completed');
-                goBack();
+                saveCompletedUser(currentUserBox.dataset.user);
             }
         }
 
         function openAddRemoveModal() {
-            const department = document.getElementById('department').value;
+            const modal = document.getElementById('addRemoveModal');
             const userList = document.getElementById('addRemoveUserList');
+            const department = document.getElementById('department').value;
+            
             userList.innerHTML = '';
-
             users[department].forEach(user => {
-                const item = document.createElement('li');
-                item.textContent = user;
+                const item = document.createElement('div');
+                item.classList.add('user-list-item');
+                item.innerHTML = `<input type="checkbox" id="${user}" /> <label for="${user}">${user}</label>`;
                 userList.appendChild(item);
             });
 
-            document.getElementById('addRemoveModal').style.display = 'block';
+            modal.style.display = 'flex';
         }
 
         function closeAddRemoveModal() {
             document.getElementById('addRemoveModal').style.display = 'none';
         }
+
+        function addUser() {
+            const department = document.getElementById('department').value;
+            const checkboxes = document.querySelectorAll('#addRemoveUserList input[type="checkbox"]:checked');
+            checkboxes.forEach(checkbox => {
+                const user = checkbox.id;
+                if (!users[department].includes(user)) {
+                    users[department].push(user);
+                }
+            });
+            showUsers();
+            closeAddRemoveModal();
+        }
+
+        function removeUser() {
+            const department = document.getElementById('department').value;
+            const checkboxes = document.querySelectorAll('#addRemoveUserList input[type="checkbox"]:checked');
+            checkboxes.forEach(checkbox => {
+                const user = checkbox.id;
+                users[department] = users[department].filter(u => u !== user);
+            });
+            showUsers();
+            closeAddRemoveModal();
+        }
+
+        window.onload = showUsers;
     </script>
 </body>
 </html>
