@@ -250,66 +250,23 @@
         let currentUserData = {}; // To store current user data
 
         const users = {
-            BHP: ['K.P.I. Malkanthi', 'W.D.R.C.Wijesiri','A.M.R.T.Atapaththu','N.M.R.Abeynayaka','J.M.C.N.Jayasunara','K.M.Nihal','M.R.Ansifa','W.M.S.R.Rajapaksha','M.J.J.Mohomed','A.C.Naushad' ,'V.L.S.De Mel','H.M.I.D.Herath','H.P.U.Manjula','M.F.M.Fasarath','L.I.Chandrasekara','J.D.Jegadhalini','H.P.D.P.N.Gunathilaka','S.M.Sacky','R.R.Shareef','D.M.M.Diwakara','H.M.P.Herath','A.M.Arshath'],
-            MLT: Array.from({ length: 30 }, (_, i) => `User${i + 1}`)
+            BHP: ['K.P.I. Malkanthi', 'W.D.R.C.Wijesiri','A.M.R.T.Atapaththu','N.M.R.Abeynayaka','J.M.C.N.Jayasunara','K.M.Nihal','M.R.Ansifa','W.M.S.R.Rajapaksha','M.J.J.Mohomed','A.C.Naushad' ,'V.L.S.De Mel','H.M.I.D.Herath','H.P.U.Manjula','M.F.M.Fasarath','L.I.Chandrasekara','J.D.Jegadhalini','H.P.D.P.N.Gunathilaka','S.M.Sacky','R.R.Shareef','D.M.M.Diwakara','H.M.P.H.Hussain','M.K.M.Amila'],
+            MLT: ['M.T.M.H.I.M.Abdul','M.I.H.M.Sadique','K.L.N.Silva','L.S.H.B.Kumarasinghe','A.M.A.Curmes','M.L.M.N.Munshid','M.I.H.M.I.M.Sanath','J.I.J.Mahesha','A.M.A.M.Wijekoon','S.A.Aziz','H.R.N.Dissanayake','A.H.A.H.Perera','J.A.A.Usman','K.A.H.A.Ali','M.A.A.K.Ashraff','I.N.A.Mahesh','A.A.M.A.Asif','M.I.A.M.Panagala','I.N.A.Munshid','M.H.A.A.Culme','M.A.K.A.Harshana']
         };
 
-        function loadCompletedUsers() {
-            const month = document.getElementById('month').value;
-            const completedUsers = JSON.parse(localStorage.getItem('completedUsers')) || {};
-            return completedUsers[month] || {};
-        }
-
-        function saveCompletedUser(user) {
-            const month = document.getElementById('month').value;
-            const department = document.getElementById('department').value;
-            const completedUsers = loadCompletedUsers();
-            if (!completedUsers[department]) {
-                completedUsers[department] = [];
-            }
-            if (!completedUsers[department].includes(user)) {
-                completedUsers[department].push(user);
-                const allCompletedUsers = JSON.parse(localStorage.getItem('completedUsers')) || {};
-                allCompletedUsers[month] = completedUsers;
-                localStorage.setItem('completedUsers', JSON.stringify(allCompletedUsers));
-            }
-            saveUserData(user); // Save data when user is marked as completed
-        }
-
-        function saveUser() {
-            if (currentUserBox) {
-                currentUserBox.classList.add('saved');
-                saveUserData(currentUserBox.dataset.user);
-            }
-        }
-
-        function saveUserData(user) {
-            const month = document.getElementById('month').value;
-            const department = document.getElementById('department').value;
-            const userData = JSON.parse(localStorage.getItem('userData')) || {};
-            userData[month] = userData[month] || {};
-            userData[month][department] = userData[month][department] || {};
-            userData[month][department][user] = currentUserData;
-            localStorage.setItem('userData', JSON.stringify(userData));
-        }
-
         function showUsers() {
+            const month = document.getElementById('month').value;
             const department = document.getElementById('department').value;
             const userList = document.getElementById('userList');
             userList.innerHTML = '';
-            const completedUsers = loadCompletedUsers()[department] || [];
+            const departmentUsers = users[department] || [];
 
-            users[department].forEach(user => {
+            departmentUsers.forEach(user => {
                 const userBox = document.createElement('div');
-                userBox.classList.add('user-box');
-                userBox.innerText = user;
+                userBox.className = 'user-box';
                 userBox.dataset.user = user;
+                userBox.innerText = user;
                 userBox.onclick = () => showTable(userBox);
-
-                if (completedUsers.includes(user)) {
-                    userBox.classList.add('completed');
-                }
-
                 userList.appendChild(userBox);
             });
         }
@@ -344,6 +301,8 @@
             document.getElementById('tableHeader').innerText = `OT Calculation for ${user}`;
             document.getElementById('userTable').style.display = 'block';
 
+            // Load saved data
+            loadTableData(user);
             initializeTimeInputs();
         }
 
@@ -355,85 +314,79 @@
             outTimeInputs.forEach(input => setupTimeInput(input, false));
         }
 
-        function setupTimeInput(input, isIn) {
-            input.addEventListener('input', function() {
-                let value = this.value;
-                let [hours, minutes] = value.split(':');
-                let ampm = '';
+        function setupTimeInput(input, isInTime) {
+            input.addEventListener('blur', () => {
+                const row = input.closest('tr');
+                const inTime = row.querySelector('.in-time').value;
+                const outTime = row.querySelector('.out-time').value;
+                const otHours = row.querySelector('.ot-hours');
 
-                if (hours) {
-                    hours = hours.trim();
-                    if (hours.length === 1) hours = '0' + hours;
-                }
-
-                if (hours >= 12) {
-                    ampm = 'PM';
-                    if (hours > 12) hours = (hours - 12).toString();
-                } else if (hours == '00') {
-                    hours = '12';
+                if (inTime && outTime) {
+                    const inDate = new Date(`1970-01-01T${inTime}`);
+                    const outDate = new Date(`1970-01-01T${outTime}`);
+                    let diff = (outDate - inDate) / (1000 * 60 * 60); // Difference in hours
+                    if (diff < 0) diff += 24; // Adjust for overnight shifts
+                    otHours.innerText = diff.toFixed(2);
                 } else {
-                    ampm = 'AM';
-                }
-
-                if (minutes === undefined) minutes = '';
-
-                if (minutes.length > 2) {
-                    minutes = minutes.substring(0, 2);
-                }
-
-                if (minutes.length === 2 && !isNaN(minutes)) {
-                    this.value = `${hours}:${minutes} ${ampm}`;
-                } else if (minutes.length > 0 && !isNaN(minutes)) {
-                    this.value = `${hours}:${minutes}`;
-                } else {
-                    this.value = `${hours}`;
-                }
-
-                if (this.value.length === 2 && !this.value.includes(':')) {
-                    this.value += ':';
-                }
-
-                if (this.value.length === 5 && !this.value.includes(' ')) {
-                    this.value += ' ' + ampm;
-                }
-
-                if (this.value.includes(':') && this.value.length === 7 && !this.value.includes(' ')) {
-                    this.value += ' ' + (isIn ? 'AM' : ampm);
-                }
-
-                this.value = this.value.trim();
-
-                if (this.value.includes(':') && this.value.length >= 7 && !this.value.includes(' ')) {
-                    this.value += ' AM'; // Default to AM
+                    otHours.innerText = '0';
                 }
             });
         }
 
-        function convertTo24HourFormat(time) {
-            let [hours, minutes] = time.split(':');
-            let ampm = '';
-
-            if (hours) {
-                hours = hours.trim();
-                if (hours.toLowerCase().includes('pm')) {
-                    ampm = 'PM';
-                    hours = hours.replace('PM', '').trim();
-                } else if (hours.toLowerCase().includes('am')) {
-                    ampm = 'AM';
-                    hours = hours.replace('AM', '').trim();
-                }
-
-                if (ampm === 'PM' && hours < 12) hours = parseInt(hours) + 12;
-                if (ampm === 'AM' && hours == 12) hours = 0;
-
-                if (hours.length === 1) hours = '0' + hours;
-            }
-
-            return `${hours || '00'}:${minutes || '00'}`;
+        function getTableData() {
+            const rows = document.querySelectorAll('#tableBody tr');
+            const tableData = [];
+            
+            rows.forEach(row => {
+                const cells = row.querySelectorAll('td');
+                const data = {
+                    date: cells[0].innerText,
+                    in: cells[2].querySelector('input').value,
+                    out: cells[3].querySelector('input').value,
+                    ot: cells[4].innerText
+                };
+                tableData.push(data);
+            });
+            
+            return tableData;
         }
 
-        function goBack() {
-            document.getElementById('userTable').style.display = 'none';
+        function saveUserData(user) {
+            const month = document.getElementById('month').value;
+            const department = document.getElementById('department').value;
+            const userData = JSON.parse(localStorage.getItem('userData')) || {};
+            userData[month] = userData[month] || {};
+            userData[month][department] = userData[month][department] || {};
+            userData[month][department][user] = {
+                ...currentUserData,
+                tableData: getTableData()
+            };
+            localStorage.setItem('userData', JSON.stringify(userData));
+        }
+
+        function loadTableData(user) {
+            const month = document.getElementById('month').value;
+            const department = document.getElementById('department').value;
+            const userData = JSON.parse(localStorage.getItem('userData')) || {};
+            const savedData = userData[month] && userData[month][department] && userData[month][department][user];
+            
+            if (savedData) {
+                savedData.tableData.forEach((data, index) => {
+                    const row = document.querySelectorAll('#tableBody tr')[index];
+                    if (row) {
+                        row.querySelector('.in-time').value = data.in;
+                        row.querySelector('.out-time').value = data.out;
+                        row.querySelector('.ot-hours').innerText = data.ot;
+                    }
+                });
+            }
+        }
+
+        function saveUser() {
+            if (currentUserBox) {
+                currentUserBox.classList.add('saved');
+                saveUserData(currentUserBox.dataset.user);
+            }
         }
 
         function completeUser() {
@@ -443,20 +396,27 @@
             }
         }
 
-        function openAddRemoveModal() {
-            const modal = document.getElementById('addRemoveModal');
-            const userList = document.getElementById('addRemoveUserList');
+        function saveCompletedUser(user) {
+            const month = document.getElementById('month').value;
             const department = document.getElementById('department').value;
-            
-            userList.innerHTML = '';
-            users[department].forEach(user => {
-                const item = document.createElement('div');
-                item.classList.add('user-list-item');
-                item.innerHTML = `<input type="checkbox" id="${user}" /> <label for="${user}">${user}</label>`;
-                userList.appendChild(item);
-            });
+            const userData = JSON.parse(localStorage.getItem('userData')) || {};
+            userData[month] = userData[month] || {};
+            userData[month][department] = userData[month][department] || {};
+            userData[month][department][user] = {
+                ...currentUserData,
+                tableData: getTableData()
+            };
+            localStorage.setItem('userData', JSON.stringify(userData));
+            // Additional logic for completed status can be added here
+        }
 
-            modal.style.display = 'flex';
+        function goBack() {
+            document.getElementById('userTable').style.display = 'none';
+            currentUserBox = null;
+        }
+
+        function openAddRemoveModal() {
+            document.getElementById('addRemoveModal').style.display = 'flex';
         }
 
         function closeAddRemoveModal() {
@@ -464,30 +424,12 @@
         }
 
         function addUser() {
-            const department = document.getElementById('department').value;
-            const checkboxes = document.querySelectorAll('#addRemoveUserList input[type="checkbox"]:checked');
-            checkboxes.forEach(checkbox => {
-                const user = checkbox.id;
-                if (!users[department].includes(user)) {
-                    users[department].push(user);
-                }
-            });
-            showUsers();
-            closeAddRemoveModal();
+            // Logic to add user
         }
 
         function removeUser() {
-            const department = document.getElementById('department').value;
-            const checkboxes = document.querySelectorAll('#addRemoveUserList input[type="checkbox"]:checked');
-            checkboxes.forEach(checkbox => {
-                const user = checkbox.id;
-                users[department] = users[department].filter(u => u !== user);
-            });
-            showUsers();
-            closeAddRemoveModal();
+            // Logic to remove user
         }
-
-        window.onload = showUsers;
     </script>
 </body>
 </html>
