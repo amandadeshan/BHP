@@ -246,150 +246,154 @@
     </div>
 
     <script>
-        let currentUserBox = null;
-        let currentUserData = {}; // To store current user data
+    let currentUserBox = null;
+    let currentUserData = {}; // To store current user data
 
-        const users = {
-            BHP: ['K.P.I. Malkanthi', 'W.D.R.C.Wijesiri', 'A.M.R.T.Atapaththu'],
-            MLT: Array.from({ length: 30 }, (_, i) => `User${i + 1}`)
-        };
+    const users = {
+        BHP: ['K.P.I. Malkanthi', 'W.D.R.C.Wijesiri', 'A.M.R.T.Atapaththu'],
+        MLT: Array.from({ length: 30 }, (_, i) => `User${i + 1}`)
+    };
 
-        function loadCompletedUsers() {
-            const month = document.getElementById('month').value;
-            const completedUsers = JSON.parse(localStorage.getItem('completedUsers')) || {};
-            return completedUsers[month] || {};
+    function loadCompletedUsers() {
+        const month = document.getElementById('month').value;
+        const completedUsers = JSON.parse(localStorage.getItem('completedUsers')) || {};
+        return completedUsers[month] || {};
+    }
+
+    function saveCompletedUser(user) {
+        const month = document.getElementById('month').value;
+        const department = document.getElementById('department').value;
+        const completedUsers = loadCompletedUsers();
+        if (!completedUsers[department]) {
+            completedUsers[department] = [];
         }
+        if (!completedUsers[department].includes(user)) {
+            completedUsers[department].push(user);
+            const allCompletedUsers = JSON.parse(localStorage.getItem('completedUsers')) || {};
+            allCompletedUsers[month] = completedUsers;
+            localStorage.setItem('completedUsers', JSON.stringify(allCompletedUsers));
+        }
+        saveUserData(user); // Save data when user is marked as completed
+    }
 
-        function saveCompletedUser(user) {
-            const month = document.getElementById('month').value;
-            const department = document.getElementById('department').value;
-            const completedUsers = loadCompletedUsers();
-            if (!completedUsers[department]) {
-                completedUsers[department] = [];
+    function showUsers() {
+        const department = document.getElementById('department').value;
+        const completedUsers = loadCompletedUsers();
+        const userList = document.getElementById('userList');
+        userList.innerHTML = '';
+        users[department].forEach(user => {
+            const div = document.createElement('div');
+            div.className = 'user-box';
+            div.dataset.user = user;
+            div.textContent = user;
+            div.onclick = () => showTable(user);
+            if (completedUsers[department] && completedUsers[department].includes(user)) {
+                div.classList.add('completed');
             }
-            if (!completedUsers[department].includes(user)) {
-                completedUsers[department].push(user);
-                const allCompletedUsers = JSON.parse(localStorage.getItem('completedUsers')) || {};
-                allCompletedUsers[month] = completedUsers;
-                localStorage.setItem('completedUsers', JSON.stringify(allCompletedUsers));
-            }
-            saveUserData(user); // Save data when user is marked as completed
-        }
+            userList.appendChild(div);
+        });
+    }
 
-        function showUsers() {
-            const department = document.getElementById('department').value;
-            const completedUsers = loadCompletedUsers();
-            const userList = document.getElementById('userList');
-            userList.innerHTML = '';
-            users[department].forEach(user => {
-                const div = document.createElement('div');
-                div.className = 'user-box';
-                div.dataset.user = user;
-                div.textContent = user;
-                div.onclick = () => showTable(user);
-                if (completedUsers[department] && completedUsers[department].includes(user)) {
-                    div.classList.add('completed');
-                }
-                userList.appendChild(div);
-            });
+    function showTable(user) {
+        const month = document.getElementById('month').value;
+        const department = document.getElementById('department').value;
+        const userData = JSON.parse(localStorage.getItem('userData')) || {};
+        const data = userData[month] && userData[month][department] ? userData[month][department][user] : {};
+        currentUserBox = document.querySelector(`.user-box[data-user="${user}"]`);
+        document.getElementById('userTable').style.display = 'block';
+        document.getElementById('tableHeader').innerHTML = `<h2>${user}</h2>`;
+        const tableBody = document.getElementById('tableBody');
+        tableBody.innerHTML = '';
+        const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+        for (let i = 1; i <= 30; i++) {
+            const date = `2024-${month}-${i.toString().padStart(2, '0')}`;
+            const day = days[i % 7];
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${date}</td>
+                <td>${day}</td>
+                <td><input type="text" class="time-input in-time" value="${data && data[date] ? data[date].inTime : ''}"></td>
+                <td><input type="text" class="time-input out-time" value="${data && data[date] ? data[date].outTime : ''}"></td>
+                <td class="ot-hours">${data && data[date] ? data[date].otHours : '0'}</td>
+            `;
+            tableBody.appendChild(row);
         }
+    }
 
-        function showTable(user) {
-            const month = document.getElementById('month').value;
-            const department = document.getElementById('department').value;
-            const userData = JSON.parse(localStorage.getItem('userData')) || {};
-            const data = userData[month] && userData[month][department] ? userData[month][department][user] : {};
-            currentUserBox = document.querySelector(`.user-box[data-user="${user}"]`);
-            document.getElementById('userTable').style.display = 'block';
-            document.getElementById('tableHeader').innerHTML = `<h2>${user}</h2>`;
-            const tableBody = document.getElementById('tableBody');
-            tableBody.innerHTML = '';
-            const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
-            for (let i = 1; i <= 30; i++) {
-                const date = `2024-${month}-${i.toString().padStart(2, '0')}`;
-                const day = days[i % 7];
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${date}</td>
-                    <td>${day}</td>
-                    <td><input type="text" class="time-input in-time" value="${data && data[date] ? data[date].inTime : ''}"></td>
-                    <td><input type="text" class="time-input out-time" value="${data && data[date] ? data[date].outTime : ''}"></td>
-                    <td class="ot-hours">${data && data[date] ? data[date].otHours : '0'}</td>
-                `;
-                tableBody.appendChild(row);
-            }
-        }
-
-        function saveUserData(user) {
-            const month = document.getElementById('month').value;
-            const department = document.getElementById('department').value;
-            const tableRows = document.querySelectorAll('#tableBody tr');
+    function saveUserData(user) {
+        const month = document.getElementById('month').value;
+        const department = document.getElementById('department').value;
+        const tableRows = document.querySelectorAll('#tableBody tr');
+        
+        currentUserData = {}; // Reset current user data
+        
+        tableRows.forEach((row) => {
+            const date = row.cells[0].innerText;
+            const day = row.cells[1].innerText;
+            const inTime = row.querySelector('.in-time').value || "";
+            const outTime = row.querySelector('.out-time').value || "";
+            const otHours = row.querySelector('.ot-hours').innerText || "0";
             
-            currentUserData = {}; // Reset current user data
-            
-            tableRows.forEach((row, index) => {
-                const date = row.cells[0].innerText;
-                const day = row.cells[1].innerText;
-                const inTime = row.querySelector('.in-time').value || "";
-                const outTime = row.querySelector('.out-time').value || "";
-                const otHours = row.querySelector('.ot-hours').innerText || "0";
-                
-                currentUserData[date] = {
-                    day: day,
-                    inTime: inTime,
-                    outTime: outTime,
-                    otHours: otHours
-                };
-            });
+            currentUserData[date] = {
+                day: day,
+                inTime: inTime,
+                outTime: outTime,
+                otHours: otHours
+            };
+        });
 
-            const userData = JSON.parse(localStorage.getItem('userData')) || {};
-            userData[month] = userData[month] || {};
-            userData[month][department] = userData[month][department] || {};
-            userData[month][department][user] = currentUserData;
-            localStorage.setItem('userData', JSON.stringify(userData));
+        const userData = JSON.parse(localStorage.getItem('userData')) || {};
+        userData[month] = userData[month] || {};
+        userData[month][department] = userData[month][department] || {};
+        userData[month][department][user] = currentUserData;
+        localStorage.setItem('userData', JSON.stringify(userData));
+    }
+
+    function saveUser() {
+        if (currentUserBox) {
+            // Change the box color to yellow to indicate saving
+            currentUserBox.classList.remove('completed'); // Remove completed class if it's there
+            currentUserBox.classList.add('saved');
+
+            // Save user data
+            saveUserData(currentUserBox.dataset.user);
+
+            // Optional: Display a message or confirmation
+            alert('User data saved and box color updated!');
         }
+    }
 
-        function saveUser() {
-            if (currentUserBox) {
-                // Change the box color to yellow to indicate saving
-                currentUserBox.classList.remove('completed'); // Remove completed class if it's there
-                currentUserBox.classList.add('saved');
-
-                // Save user data
-                saveUserData(currentUserBox.dataset.user);
-            }
+    function completeUser() {
+        if (currentUserBox) {
+            currentUserBox.classList.add('completed');
+            saveCompletedUser(currentUserBox.dataset.user);
         }
+    }
 
-        function completeUser() {
-            if (currentUserBox) {
-                currentUserBox.classList.add('completed');
-                saveCompletedUser(currentUserBox.dataset.user);
-            }
-        }
+    function goBack() {
+        document.getElementById('userTable').style.display = 'none';
+    }
 
-        function goBack() {
-            document.getElementById('userTable').style.display = 'none';
-        }
+    function openAddRemoveModal() {
+        document.getElementById('addRemoveModal').style.display = 'flex';
+    }
 
-        function openAddRemoveModal() {
-            document.getElementById('addRemoveModal').style.display = 'flex';
-        }
+    function closeAddRemoveModal() {
+        document.getElementById('addRemoveModal').style.display = 'none';
+    }
 
-        function closeAddRemoveModal() {
-            document.getElementById('addRemoveModal').style.display = 'none';
-        }
+    function addUser() {
+        // Functionality for adding user
+    }
 
-        function addUser() {
-            // Functionality for adding user
-        }
+    function removeUser() {
+        // Functionality for removing user
+    }
 
-        function removeUser() {
-            // Functionality for removing user
-        }
+    window.onload = function () {
+        showUsers();
+    };
+</script>
 
-        window.onload = function () {
-            showUsers();
-        };
-    </script>
 </body>
 </html>
