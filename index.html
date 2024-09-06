@@ -14,56 +14,12 @@
             background: linear-gradient(135deg, #74ebd5, #acb6e5);
             background-size: 400% 400%;
             animation: gradient 15s ease infinite;
-            overflow: hidden; /* Hide overflowing bubbles */
         }
         @keyframes gradient {
             0% { background-position: 0% 0%; }
             50% { background-position: 100% 100%; }
             100% { background-position: 0% 0%; }
         }
-        /* Bubble Animation */
-        .bubble {
-            position: absolute;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.6);
-            pointer-events: none;
-            animation: bubble 20s infinite;
-            opacity: 0.6;
-        }
-        @keyframes bubble {
-            0% { transform: translateY(100vh) scale(0); }
-            50% { transform: translateY(50vh) scale(1); }
-            100% { transform: translateY(-10vh) scale(0); }
-        }
-        .bubble:nth-child(1) {
-            width: 50px;
-            height: 50px;
-            animation-duration: 15s;
-            left: 10%;
-            animation-delay: 0s;
-        }
-        .bubble:nth-child(2) {
-            width: 80px;
-            height: 80px;
-            animation-duration: 20s;
-            left: 30%;
-            animation-delay: 5s;
-        }
-        .bubble:nth-child(3) {
-            width: 60px;
-            height: 60px;
-            animation-duration: 18s;
-            left: 50%;
-            animation-delay: 10s;
-        }
-        .bubble:nth-child(4) {
-            width: 40px;
-            height: 40px;
-            animation-duration: 25s;
-            left: 70%;
-            animation-delay: 15s;
-        }
-
         h1 {
             text-align: center;
             color: #444;
@@ -107,44 +63,24 @@
             border-color: #ffc107;
             background-color: #fff3cd;
         }
-        #userTable {
-            margin-top: 30px;
-            display: block;
-            max-height: 400px; /* Adjust height as needed */
-            overflow-y: auto; /* Enable vertical scrolling */
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            background-color: #fff;
-            padding: 10px;
-        }
         table {
             width: 100%;
             border-collapse: collapse;
+            margin-top: 20px;
             background-color: #fff;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             border-radius: 8px;
             overflow: hidden;
         }
-        thead th {
-            position: sticky;
-            top: 0;
-            z-index: 1;
-        }
         th, td {
             border: 1px solid #ddd;
-            padding: 12px 15px;
+            padding: 10px;
             text-align: center;
             color: #333;
         }
         th {
             background-color: #007bff;
             color: white;
-            font-weight: bold;
-        }
-        tr:nth-child(even) {
-            background-color: #f2f2f2;
-        }
-        tr:hover {
-            background-color: #e7f3ff;
         }
         button {
             margin-top: 15px;
@@ -160,6 +96,16 @@
         }
         button:hover {
             background-color: #0056b3;
+        }
+        #userTable {
+            margin-top: 30px;
+            display: none;
+        }
+        #userList {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 20px;
         }
         #tableHeader {
             text-align: center;
@@ -220,62 +166,61 @@
         .time-input:focus {
             outline: none;
             border-color: #007bff;
-            box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
-        }
-        .close {
-            color: #fff;
-            float: right;
-            font-size: 28px;
-            font-weight: bold;
-        }
-        .close:hover,
-        .close:focus {
-            color: #000;
-            text-decoration: none;
-            cursor: pointer;
+            box-shadow: 0 0 4px rgba(0, 123, 255, 0.2);
         }
     </style>
 </head>
 <body>
-    <!-- Add Bubble Elements -->
-    <div class="bubble"></div>
-    <div class="bubble"></div>
-    <div class="bubble"></div>
-    <div class="bubble"></div>
-
+    <div class="background"></div>
     <h1>OT Calculation</h1>
-    <div style="text-align: center; margin-bottom: 20px;">
+    <div style="text-align: center;">
+        <label for="month">Select Month:</label>
+        <select id="month" onchange="showUsers()">
+            <option value="01">January</option>
+            <option value="02">February</option>
+            <option value="03">March</option>
+            <option value="04">April</option>
+            <option value="05">May</option>
+            <option value="06">June</option>
+            <option value="07">July</option>
+            <option value="08">August</option>
+            <option value="09">September</option>
+            <option value="10">October</option>
+            <option value="11">November</option>
+            <option value="12">December</option>
+        </select>
+
         <label for="department">Select Department:</label>
         <select id="department" onchange="showUsers()">
             <option value="BHP">BHP</option>
             <option value="MLT">MLT</option>
         </select>
-        <label for="month">Select Month:</label>
-        <select id="month" onchange="showUsers()">
-            <option value="2024-09">September 2024</option>
-            <!-- Add more months as needed -->
-        </select>
+        <button id="addRemoveBtn" onclick="openAddRemoveModal()">Add/Remove</button>
     </div>
-    <div id="userList" style="display: flex; flex-wrap: wrap; justify-content: center;"></div>
-    
-    <div id="userTable" style="display: none;">
+
+    <div id="userList"></div>
+
+    <div id="userTable">
         <div id="tableHeader"></div>
         <table>
             <thead>
                 <tr>
                     <th>Date</th>
                     <th>Day</th>
-                    <th>In Time</th>
-                    <th>Out Time</th>
-                    <th>OT Hours</th>
+                    <th>In</th>
+                    <th>Out</th>
+                    <th>OT</th>
                 </tr>
             </thead>
             <tbody id="tableBody"></tbody>
         </table>
-        <button onclick="completeUser()">Complete</button>
-        <button onclick="goBack()">Back</button>
+        <div style="text-align: center;">
+            <button onclick="goBack()">Exit Table</button>
+            <button onclick="completeUser()">Completed</button>
+        </div>
     </div>
 
+    <!-- Modal -->
     <div id="addRemoveModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
@@ -283,28 +228,24 @@
                 <h2>Add/Remove Users</h2>
             </div>
             <div class="modal-body">
-                <div class="user-list-item">
-                    <input type="text" id="newUserName" placeholder="New Username">
-                    <button onclick="addUser()">Add User</button>
-                </div>
-                <div class="user-list-item">
-                    <input type="text" id="removeUserName" placeholder="Remove Username">
-                    <button onclick="removeUser()">Remove User</button>
-                </div>
+                <div id="addRemoveUserList"></div>
             </div>
             <div class="modal-footer">
+                <button onclick="addUser()">Add</button>
+                <button onclick="removeUser()">Remove</button>
                 <button onclick="closeAddRemoveModal()">Close</button>
             </div>
         </div>
     </div>
 
     <script>
-    const users = {
-        BHP: ['John Doe', 'Jane Smith'],
-        MLT: ['Emily Johnson', 'Michael Brown']
-    };
+    let currentUserBox = null;
+    let currentUserData = {}; // To store current user data
 
-    let currentUserBox;
+    const users = {
+        BHP: ['K.P.I. Malkanthi', 'W.D.R.C.Wijesiri', 'A.M.R.T.Atapaththu'],
+        MLT: Array.from({ length: 30 }, (_, i) => `User${i + 1}`)
+    };
 
     function loadCompletedUsers() {
         const month = document.getElementById('month').value;
@@ -316,7 +257,6 @@
         const month = document.getElementById('month').value;
         const department = document.getElementById('department').value;
         const completedUsers = loadCompletedUsers();
-
         if (!completedUsers[department]) {
             completedUsers[department] = [];
         }
@@ -378,7 +318,7 @@
         const department = document.getElementById('department').value;
         const tableRows = document.querySelectorAll('#tableBody tr');
         
-        let currentUserData = {}; // Reset current user data
+        currentUserData = {}; // Reset current user data
         
         tableRows.forEach((row) => {
             const date = row.cells[0].innerText;
