@@ -128,26 +128,27 @@
             width: 100%;
             height: 100%;
             overflow: auto;
-            background-color: rgba(0, 0, 0, 0.6);
+            background-color: rgba(0, 0, 0, 0.4);
             justify-content: center;
             align-items: center;
         }
         .modal-content {
             background-color: #fefefe;
+            margin: 15% auto;
             padding: 20px;
             border: 1px solid #888;
             width: 80%;
             max-width: 600px;
             border-radius: 8px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            animation: slideIn 0.5s ease-out;
         }
         .modal-header {
-            background-color: #007bff;
-            color: #fff;
             padding: 10px;
-            border-radius: 8px 8px 0 0;
+            background: #007bff;
+            color: #fff;
+            border-bottom: 1px solid #ddd;
             font-size: 18px;
+            border-radius: 8px 8px 0 0;
         }
         .modal-body {
             padding: 20px;
@@ -158,24 +159,20 @@
             border-top: 1px solid #ddd;
         }
         .user-list-item {
-            display: flex;
-            align-items: center;
-            padding: 8px;
-            background-color: #f9f9f9;
-            margin-bottom: 5px;
-            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+        .time-input {
+            width: 100px;
+            text-align: center;
             border: 1px solid #ddd;
-            transition: background-color 0.3s;
+            border-radius: 4px;
+            padding: 5px;
+            background-color: #fff;
         }
-        .user-list-item input {
-            margin-right: 10px;
-        }
-        .user-list-item:hover {
-            background-color: #e7f3ff;
-        }
-        @keyframes slideIn {
-            from { transform: translateY(-30px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
+        .time-input:focus {
+            outline: none;
+            border-color: #007bff;
+            box-shadow: 0 0 4px rgba(0, 123, 255, 0.2);
         }
     </style>
 </head>
@@ -254,113 +251,124 @@
 
         const users = {
             BHP: ['K.P.I. Malkanthi', 'W.D.R.C.Wijesiri', 'A.M.R.T.Atapaththu'],
-            MLT: Array.from({ length: 10 }, (_, i) => `User${i + 1}`)
+            MLT: Array.from({ length: 30 }, (_, i) => `User${i + 1}`)
         };
 
         function loadCompletedUsers() {
             const month = document.getElementById('month').value;
             const completedUsers = JSON.parse(localStorage.getItem('completedUsers')) || {};
-            return completedUsers[month] ||
-        function loadCompletedUsers() {
+            return completedUsers[month] || {};
+        }
+
+        function saveCompletedUser(user) {
             const month = document.getElementById('month').value;
-            const completedUsers = JSON.parse(localStorage.getItem('completedUsers')) || {};
-            return completedUsers[month] || [];
+            const department = document.getElementById('department').value;
+            const completedUsers = loadCompletedUsers();
+            if (!completedUsers[department]) {
+                completedUsers[department] = [];
+            }
+            if (!completedUsers[department].includes(user)) {
+                completedUsers[department].push(user);
+                const allCompletedUsers = JSON.parse(localStorage.getItem('completedUsers')) || {};
+                allCompletedUsers[month] = completedUsers;
+                localStorage.setItem('completedUsers', JSON.stringify(allCompletedUsers));
+            }
+            saveUserData(user); // Save data when user is marked as completed
         }
 
         function showUsers() {
             const department = document.getElementById('department').value;
-            const month = document.getElementById('month').value;
-            const userList = document.getElementById('userList');
             const completedUsers = loadCompletedUsers();
-
+            const userList = document.getElementById('userList');
             userList.innerHTML = '';
-
             users[department].forEach(user => {
-                const userBox = document.createElement('div');
-                userBox.classList.add('user-box');
-                userBox.textContent = user;
-
-                if (completedUsers.includes(user)) {
-                    userBox.classList.add('completed');
+                const div = document.createElement('div');
+                div.className = 'user-box';
+                div.dataset.user = user;
+                div.textContent = user;
+                div.onclick = () => showTable(user);
+                if (completedUsers[department] && completedUsers[department].includes(user)) {
+                    div.classList.add('completed');
                 }
-
-                userBox.onclick = function () {
-                    openTableForUser(user);
-                };
-
-                userList.appendChild(userBox);
+                userList.appendChild(div);
             });
         }
 
-        function openTableForUser(user) {
-            currentUserBox = user;
-            const userTable = document.getElementById('userTable');
-            const tableHeader = document.getElementById('tableHeader');
+        function showTable(user) {
+            const month = document.getElementById('month').value;
+            const department = document.getElementById('department').value;
+            const userData = JSON.parse(localStorage.getItem('userData')) || {};
+            const data = userData[month] && userData[month][department] ? userData[month][department][user] : {};
+            currentUserBox = document.querySelector(`.user-box[data-user="${user}"]`);
+            document.getElementById('userTable').style.display = 'block';
+            document.getElementById('tableHeader').innerHTML = `<h2>${user}</h2>`;
             const tableBody = document.getElementById('tableBody');
-
-            tableHeader.textContent = `Working hours for ${user}`;
-            tableBody.innerHTML = ''; // Clear the table
-
-            // Sample data for the table (you can replace this with actual data)
-            const sampleData = [
-                { date: '2023-09-01', day: 'Friday', in: '9:00 AM', out: '5:00 PM', ot: '2 hours' },
-                { date: '2023-09-02', day: 'Saturday', in: '10:00 AM', out: '4:00 PM', ot: '1 hour' }
-            ];
-
-            sampleData.forEach(entry => {
+            tableBody.innerHTML = '';
+            const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+            for (let i = 1; i <= 30; i++) {
+                const date = `2024-${month}-${i.toString().padStart(2, '0')}`;
+                const day = days[i % 7];
                 const row = document.createElement('tr');
                 row.innerHTML = `
-                    <td>${entry.date}</td>
-                    <td>${entry.day}</td>
-                    <td>${entry.in}</td>
-                    <td>${entry.out}</td>
-                    <td>${entry.ot}</td>
+                    <td>${date}</td>
+                    <td>${day}</td>
+                    <td><input type="text" class="time-input in-time" value="${data && data[date] ? data[date].inTime : ''}"></td>
+                    <td><input type="text" class="time-input out-time" value="${data && data[date] ? data[date].outTime : ''}"></td>
+                    <td class="ot-hours">${data && data[date] ? data[date].otHours : '0'}</td>
                 `;
                 tableBody.appendChild(row);
-            });
-
-            document.getElementById('userList').style.display = 'none';
-            userTable.style.display = 'block';
+            }
         }
 
-        function goBack() {
-            document.getElementById('userList').style.display = 'flex';
-            document.getElementById('userTable').style.display = 'none';
+        function saveUserData(user) {
+            const month = document.getElementById('month').value;
+            const department = document.getElementById('department').value;
+            const tableRows = document.querySelectorAll('#tableBody tr');
+            
+            currentUserData = {}; // Reset current user data
+            
+            tableRows.forEach((row, index) => {
+                const date = row.cells[0].innerText;
+                const day = row.cells[1].innerText;
+                const inTime = row.querySelector('.in-time').value || "";
+                const outTime = row.querySelector('.out-time').value || "";
+                const otHours = row.querySelector('.ot-hours').innerText || "0";
+                
+                currentUserData[date] = {
+                    day: day,
+                    inTime: inTime,
+                    outTime: outTime,
+                    otHours: otHours
+                };
+            });
+
+            const userData = JSON.parse(localStorage.getItem('userData')) || {};
+            userData[month] = userData[month] || {};
+            userData[month][department] = userData[month][department] || {};
+            userData[month][department][user] = currentUserData;
+            localStorage.setItem('userData', JSON.stringify(userData));
         }
 
         function saveUser() {
-            const month = document.getElementById('month').value;
-            let savedUsers = JSON.parse(localStorage.getItem('savedUsers')) || {};
-            savedUsers[month] = savedUsers[month] || [];
-            savedUsers[month].push(currentUserBox);
-            localStorage.setItem('savedUsers', JSON.stringify(savedUsers));
-            goBack();
+            if (currentUserBox) {
+                currentUserBox.classList.add('saved');
+                saveUserData(currentUserBox.dataset.user);
+            }
         }
 
         function completeUser() {
-            const month = document.getElementById('month').value;
-            let completedUsers = JSON.parse(localStorage.getItem('completedUsers')) || {};
-            completedUsers[month] = completedUsers[month] || [];
-            completedUsers[month].push(currentUserBox);
-            localStorage.setItem('completedUsers', JSON.stringify(completedUsers));
-            goBack();
-            showUsers();
+            if (currentUserBox) {
+                currentUserBox.classList.add('completed');
+                saveCompletedUser(currentUserBox.dataset.user);
+            }
+        }
+
+        function goBack() {
+            document.getElementById('userTable').style.display = 'none';
         }
 
         function openAddRemoveModal() {
-            const modal = document.getElementById('addRemoveModal');
-            const department = document.getElementById('department').value;
-            const addRemoveUserList = document.getElementById('addRemoveUserList');
-            addRemoveUserList.innerHTML = '';
-
-            users[department].forEach(user => {
-                const listItem = document.createElement('div');
-                listItem.classList.add('user-list-item');
-                listItem.innerHTML = `<input type="checkbox" id="${user}" /> <label for="${user}">${user}</label>`;
-                addRemoveUserList.appendChild(listItem);
-            });
-
-            modal.style.display = 'flex';
+            document.getElementById('addRemoveModal').style.display = 'flex';
         }
 
         function closeAddRemoveModal() {
@@ -368,30 +376,15 @@
         }
 
         function addUser() {
-            const department = document.getElementById('department').value;
-            const checkboxes = document.querySelectorAll('#addRemoveUserList input[type="checkbox"]:checked');
-            checkboxes.forEach(checkbox => {
-                if (!users[department].includes(checkbox.id)) {
-                    users[department].push(checkbox.id);
-                }
-            });
-            closeAddRemoveModal();
-            showUsers();
+            // Functionality for adding user
         }
 
         function removeUser() {
-            const department = document.getElementById('department').value;
-            const checkboxes = document.querySelectorAll('#addRemoveUserList input[type="checkbox"]:checked');
-            users[department] = users[department].filter(user => !Array.from(checkboxes).map(c => c.id).includes(user));
-            closeAddRemoveModal();
-            showUsers();
+            // Functionality for removing user
         }
 
-        window.onclick = function (event) {
-            const modal = document.getElementById('addRemoveModal');
-            if (event.target === modal) {
-                modal.style.display = 'none';
-            }
+        window.onload = function () {
+            showUsers();
         };
     </script>
 </body>
