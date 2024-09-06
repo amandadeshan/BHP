@@ -107,14 +107,27 @@
             border-color: #ffc107;
             background-color: #fff3cd;
         }
+        #userTable {
+            margin-top: 30px;
+            display: block;
+            max-height: 400px; /* Adjust height as needed */
+            overflow-y: auto; /* Enable vertical scrolling */
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: #fff;
+            padding: 10px;
+        }
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 20px;
             background-color: #fff;
             border-radius: 8px;
             overflow: hidden;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        thead th {
+            position: sticky;
+            top: 0;
+            z-index: 1;
         }
         th, td {
             border: 1px solid #ddd;
@@ -147,16 +160,6 @@
         }
         button:hover {
             background-color: #0056b3;
-        }
-        #userTable {
-            margin-top: 30px;
-            display: none;
-        }
-        #userList {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            margin-top: 20px;
         }
         #tableHeader {
             text-align: center;
@@ -217,51 +220,45 @@
         .time-input:focus {
             outline: none;
             border-color: #007bff;
-            box-shadow: 0 0 4px rgba(0, 123, 255, 0.2);
+            box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
         }
-        .username {
+        .close {
+            color: #fff;
+            float: right;
+            font-size: 28px;
             font-weight: bold;
-            color: #007bff;
+        }
+        .close:hover,
+        .close:focus {
+            color: #000;
+            text-decoration: none;
+            cursor: pointer;
         }
     </style>
 </head>
 <body>
-    <!-- Bubble Elements -->
+    <!-- Add Bubble Elements -->
     <div class="bubble"></div>
     <div class="bubble"></div>
     <div class="bubble"></div>
     <div class="bubble"></div>
 
-    <div class="background"></div>
     <h1>OT Calculation</h1>
-    <div style="text-align: center;">
-        <label for="month">Select Month:</label>
-        <select id="month" onchange="showUsers()">
-            <option value="01">January</option>
-            <option value="02">February</option>
-            <option value="03">March</option>
-            <option value="04">April</option>
-            <option value="05">May</option>
-            <option value="06">June</option>
-            <option value="07">July</option>
-            <option value="08">August</option>
-            <option value="09">September</option>
-            <option value="10">October</option>
-            <option value="11">November</option>
-            <option value="12">December</option>
-        </select>
-
+    <div style="text-align: center; margin-bottom: 20px;">
         <label for="department">Select Department:</label>
         <select id="department" onchange="showUsers()">
             <option value="BHP">BHP</option>
             <option value="MLT">MLT</option>
         </select>
-        <button id="addRemoveBtn" onclick="openAddRemoveModal()">Add/Remove</button>
+        <label for="month">Select Month:</label>
+        <select id="month" onchange="showUsers()">
+            <option value="2024-09">September 2024</option>
+            <!-- Add more months as needed -->
+        </select>
     </div>
-
-    <div id="userList"></div>
-
-    <div id="userTable">
+    <div id="userList" style="display: flex; flex-wrap: wrap; justify-content: center;"></div>
+    
+    <div id="userTable" style="display: none;">
         <div id="tableHeader"></div>
         <table>
             <thead>
