@@ -250,7 +250,7 @@
         let currentUserData = {}; // To store current user data
 
         const users = {
-            BHP: ['K.P.I. Malkanthi', 'W.D.R.C.Wijesiri','A.M.R.T.Atapaththu','N.M.R.Abeynayaka','J.M.C.N.Jayasunara','K.M.Nihal','M.R.Ansifa','W.M.S.R.Rajapaksha','M.J.J.Mohomed','A.C.Naushad' ,'V.L.S.De Mel','H.M.I.D.Herath','H.P.U.Manjula','M.F.M.Fasarath','L.I.Chandrasekara','J.D.Jegadhalini','H.P.D.P.N.Gunathilaka','S.M.Sacky','R.R.Shareef','D.M.M.Diwakara','H.M.P.Herath','A.M.Arshath'],
+            BHP: ['K.P.I. Malkanthi', 'W.D.R.C.Wijesiri', 'A.M.R.T.Atapaththu'],
             MLT: Array.from({ length: 30 }, (_, i) => `User${i + 1}`)
         };
 
@@ -276,16 +276,72 @@
             saveUserData(user); // Save data when user is marked as completed
         }
 
-        function saveUser() {
-            if (currentUserBox) {
-                currentUserBox.classList.add('saved');
-                saveUserData(currentUserBox.dataset.user);
+        function showUsers() {
+            const department = document.getElementById('department').value;
+            const completedUsers = loadCompletedUsers();
+            const userList = document.getElementById('userList');
+            userList.innerHTML = '';
+            users[department].forEach(user => {
+                const div = document.createElement('div');
+                div.className = 'user-box';
+                div.dataset.user = user;
+                div.textContent = user;
+                div.onclick = () => showTable(user);
+                if (completedUsers[department] && completedUsers[department].includes(user)) {
+                    div.classList.add('completed');
+                }
+                userList.appendChild(div);
+            });
+        }
+
+        function showTable(user) {
+            const month = document.getElementById('month').value;
+            const department = document.getElementById('department').value;
+            const userData = JSON.parse(localStorage.getItem('userData')) || {};
+            const data = userData[month] && userData[month][department] ? userData[month][department][user] : {};
+            currentUserBox = document.querySelector(`.user-box[data-user="${user}"]`);
+            document.getElementById('userTable').style.display = 'block';
+            document.getElementById('tableHeader').innerHTML = `<h2>${user}</h2>`;
+            const tableBody = document.getElementById('tableBody');
+            tableBody.innerHTML = '';
+            const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+            for (let i = 1; i <= 30; i++) {
+                const date = `2024-${month}-${i.toString().padStart(2, '0')}`;
+                const day = days[i % 7];
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${date}</td>
+                    <td>${day}</td>
+                    <td><input type="text" class="time-input in-time" value="${data && data[date] ? data[date].inTime : ''}"></td>
+                    <td><input type="text" class="time-input out-time" value="${data && data[date] ? data[date].outTime : ''}"></td>
+                    <td class="ot-hours">${data && data[date] ? data[date].otHours : '0'}</td>
+                `;
+                tableBody.appendChild(row);
             }
         }
 
         function saveUserData(user) {
             const month = document.getElementById('month').value;
             const department = document.getElementById('department').value;
+            const tableRows = document.querySelectorAll('#tableBody tr');
+            
+            currentUserData = {}; // Reset current user data
+            
+            tableRows.forEach((row, index) => {
+                const date = row.cells[0].innerText;
+                const day = row.cells[1].innerText;
+                const inTime = row.querySelector('.in-time').value || "";
+                const outTime = row.querySelector('.out-time').value || "";
+                const otHours = row.querySelector('.ot-hours').innerText || "0";
+                
+                currentUserData[date] = {
+                    day: day,
+                    inTime: inTime,
+                    outTime: outTime,
+                    otHours: otHours
+                };
+            });
+
             const userData = JSON.parse(localStorage.getItem('userData')) || {};
             userData[month] = userData[month] || {};
             userData[month][department] = userData[month][department] || {};
@@ -293,147 +349,11 @@
             localStorage.setItem('userData', JSON.stringify(userData));
         }
 
-        function showUsers() {
-            const department = document.getElementById('department').value;
-            const userList = document.getElementById('userList');
-            userList.innerHTML = '';
-            const completedUsers = loadCompletedUsers()[department] || [];
-
-            users[department].forEach(user => {
-                const userBox = document.createElement('div');
-                userBox.classList.add('user-box');
-                userBox.innerText = user;
-                userBox.dataset.user = user;
-                userBox.onclick = () => showTable(userBox);
-
-                if (completedUsers.includes(user)) {
-                    userBox.classList.add('completed');
-                }
-
-                userList.appendChild(userBox);
-            });
-        }
-
-        function showTable(userBox) {
-            currentUserBox = userBox;
-            currentUserData = {}; // Reset current user data
-            const user = userBox.dataset.user;
-            const tableBody = document.getElementById('tableBody');
-            const month = document.getElementById('month').value;
-            const year = new Date().getFullYear();
-            const daysInMonth = new Date(year, month, 0).getDate();
-
-            tableBody.innerHTML = '';
-
-            for (let day = 1; day <= daysInMonth; day++) {
-                const date = new Date(year, month - 1, day);
-                const dayOfWeek = date.toLocaleString('en-US', { weekday: 'long' });
-                const formattedDate = date.toISOString().split('T')[0];
-
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${formattedDate}</td>
-                    <td>${dayOfWeek}</td>
-                    <td><input type="text" class="time-input in-time" placeholder="e.g., 08:00 PM" /></td>
-                    <td><input type="text" class="time-input out-time" placeholder="e.g., 05:00 PM" /></td>
-                    <td class="ot-hours">0</td>
-                `;
-                tableBody.appendChild(row);
+        function saveUser() {
+            if (currentUserBox) {
+                currentUserBox.classList.add('saved');
+                saveUserData(currentUserBox.dataset.user);
             }
-
-            document.getElementById('tableHeader').innerText = `OT Calculation for ${user}`;
-            document.getElementById('userTable').style.display = 'block';
-
-            initializeTimeInputs();
-        }
-
-        function initializeTimeInputs() {
-            const inTimeInputs = document.querySelectorAll('.in-time');
-            const outTimeInputs = document.querySelectorAll('.out-time');
-
-            inTimeInputs.forEach(input => setupTimeInput(input, true));
-            outTimeInputs.forEach(input => setupTimeInput(input, false));
-        }
-
-        function setupTimeInput(input, isIn) {
-            input.addEventListener('input', function() {
-                let value = this.value;
-                let [hours, minutes] = value.split(':');
-                let ampm = '';
-
-                if (hours) {
-                    hours = hours.trim();
-                    if (hours.length === 1) hours = '0' + hours;
-                }
-
-                if (hours >= 12) {
-                    ampm = 'PM';
-                    if (hours > 12) hours = (hours - 12).toString();
-                } else if (hours == '00') {
-                    hours = '12';
-                } else {
-                    ampm = 'AM';
-                }
-
-                if (minutes === undefined) minutes = '';
-
-                if (minutes.length > 2) {
-                    minutes = minutes.substring(0, 2);
-                }
-
-                if (minutes.length === 2 && !isNaN(minutes)) {
-                    this.value = `${hours}:${minutes} ${ampm}`;
-                } else if (minutes.length > 0 && !isNaN(minutes)) {
-                    this.value = `${hours}:${minutes}`;
-                } else {
-                    this.value = `${hours}`;
-                }
-
-                if (this.value.length === 2 && !this.value.includes(':')) {
-                    this.value += ':';
-                }
-
-                if (this.value.length === 5 && !this.value.includes(' ')) {
-                    this.value += ' ' + ampm;
-                }
-
-                if (this.value.includes(':') && this.value.length === 7 && !this.value.includes(' ')) {
-                    this.value += ' ' + (isIn ? 'AM' : ampm);
-                }
-
-                this.value = this.value.trim();
-
-                if (this.value.includes(':') && this.value.length >= 7 && !this.value.includes(' ')) {
-                    this.value += ' AM'; // Default to AM
-                }
-            });
-        }
-
-        function convertTo24HourFormat(time) {
-            let [hours, minutes] = time.split(':');
-            let ampm = '';
-
-            if (hours) {
-                hours = hours.trim();
-                if (hours.toLowerCase().includes('pm')) {
-                    ampm = 'PM';
-                    hours = hours.replace('PM', '').trim();
-                } else if (hours.toLowerCase().includes('am')) {
-                    ampm = 'AM';
-                    hours = hours.replace('AM', '').trim();
-                }
-
-                if (ampm === 'PM' && hours < 12) hours = parseInt(hours) + 12;
-                if (ampm === 'AM' && hours == 12) hours = 0;
-
-                if (hours.length === 1) hours = '0' + hours;
-            }
-
-            return `${hours || '00'}:${minutes || '00'}`;
-        }
-
-        function goBack() {
-            document.getElementById('userTable').style.display = 'none';
         }
 
         function completeUser() {
@@ -443,20 +363,12 @@
             }
         }
 
-        function openAddRemoveModal() {
-            const modal = document.getElementById('addRemoveModal');
-            const userList = document.getElementById('addRemoveUserList');
-            const department = document.getElementById('department').value;
-            
-            userList.innerHTML = '';
-            users[department].forEach(user => {
-                const item = document.createElement('div');
-                item.classList.add('user-list-item');
-                item.innerHTML = `<input type="checkbox" id="${user}" /> <label for="${user}">${user}</label>`;
-                userList.appendChild(item);
-            });
+        function goBack() {
+            document.getElementById('userTable').style.display = 'none';
+        }
 
-            modal.style.display = 'flex';
+        function openAddRemoveModal() {
+            document.getElementById('addRemoveModal').style.display = 'flex';
         }
 
         function closeAddRemoveModal() {
@@ -464,30 +376,16 @@
         }
 
         function addUser() {
-            const department = document.getElementById('department').value;
-            const checkboxes = document.querySelectorAll('#addRemoveUserList input[type="checkbox"]:checked');
-            checkboxes.forEach(checkbox => {
-                const user = checkbox.id;
-                if (!users[department].includes(user)) {
-                    users[department].push(user);
-                }
-            });
-            showUsers();
-            closeAddRemoveModal();
+            // Functionality for adding user
         }
 
         function removeUser() {
-            const department = document.getElementById('department').value;
-            const checkboxes = document.querySelectorAll('#addRemoveUserList input[type="checkbox"]:checked');
-            checkboxes.forEach(checkbox => {
-                const user = checkbox.id;
-                users[department] = users[department].filter(u => u !== user);
-            });
-            showUsers();
-            closeAddRemoveModal();
+            // Functionality for removing user
         }
 
-        window.onload = showUsers;
+        window.onload = function () {
+            showUsers();
+        };
     </script>
 </body>
 </html>
