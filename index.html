@@ -251,7 +251,7 @@
 
         const users = {
             BHP: ['K.P.I. Malkanthi', 'W.D.R.C.Wijesiri','A.M.R.T.Atapaththu','N.M.R.Abeynayaka','J.M.C.N.Jayasunara','K.M.Nihal','M.R.Ansifa','W.M.S.R.Rajapaksha','M.J.J.Mohomed','A.C.Naushad' ,'V.L.S.De Mel','H.M.I.D.Herath','H.P.U.Manjula','M.F.M.Fasarath','L.I.Chandrasekara','J.D.Jegadhalini','H.P.D.P.N.Gunathilaka','S.M.Sacky','R.R.Shareef','D.M.M.Diwakara','H.M.P.Herath','A.M.Arshath'],
-            MLT: Array.from({ length: 30 }, (_, i) => User${i + 1})
+            MLT: Array.from({ length: 30 }, (_, i) => `User${i + 1}`)
         };
 
         function loadCompletedUsers() {
@@ -331,17 +331,17 @@
                 const formattedDate = date.toISOString().split('T')[0];
 
                 const row = document.createElement('tr');
-                row.innerHTML = 
+                row.innerHTML = `
                     <td>${formattedDate}</td>
                     <td>${dayOfWeek}</td>
-                    <td><input type="text" class="time-input in-time" placeholder="e.g., 08:00 AM" /></td>
+                    <td><input type="text" class="time-input in-time" placeholder="e.g., 08:00 PM" /></td>
                     <td><input type="text" class="time-input out-time" placeholder="e.g., 05:00 PM" /></td>
                     <td class="ot-hours">0</td>
-                ;
+                `;
                 tableBody.appendChild(row);
             }
 
-            document.getElementById('tableHeader').innerText = OT Calculation for ${user};
+            document.getElementById('tableHeader').innerText = `OT Calculation for ${user}`;
             document.getElementById('userTable').style.display = 'block';
 
             initializeTimeInputs();
@@ -382,11 +382,11 @@
                 }
 
                 if (minutes.length === 2 && !isNaN(minutes)) {
-                    this.value = ${hours}:${minutes} ${ampm};
+                    this.value = `${hours}:${minutes} ${ampm}`;
                 } else if (minutes.length > 0 && !isNaN(minutes)) {
-                    this.value = ${hours}:${minutes};
+                    this.value = `${hours}:${minutes}`;
                 } else {
-                    this.value = ${hours};
+                    this.value = `${hours}`;
                 }
 
                 if (this.value.length === 2 && !this.value.includes(':')) {
@@ -429,7 +429,7 @@
                 if (hours.length === 1) hours = '0' + hours;
             }
 
-            return ${hours || '00'}:${minutes || '00'};
+            return `${hours || '00'}:${minutes || '00'}`;
         }
 
         function goBack() {
@@ -452,7 +452,7 @@
             users[department].forEach(user => {
                 const item = document.createElement('div');
                 item.classList.add('user-list-item');
-                item.innerHTML = <input type="checkbox" id="${user}" /> <label for="${user}">${user}</label>;
+                item.innerHTML = `<input type="checkbox" id="${user}" /> <label for="${user}">${user}</label>`;
                 userList.appendChild(item);
             });
 
@@ -490,4 +490,4 @@
         window.onload = showUsers;
     </script>
 </body>
-</html>   
+</html>
