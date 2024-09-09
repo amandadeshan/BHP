@@ -1,9 +1,7 @@
 // Example user data categorized by department
 const usersByDepartment = {
-    "HR": ["John Doe", "Alice Brown"],
-    "Finance": ["Jane Smith", "Bob Johnson"],
-    "Sales": ["Robert Johnson", "Emily Davis"],
-    "Marketing": ["Jessica Lee", "Michael White"]
+    "OFFICE/DO": ["John Doe", "Alice Brown"],
+    "MO": ["Jane Smith", "Bob Johnson"]
 };
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -145,11 +143,14 @@ function showUserTable(user, month, year) {
 }
 
 function saveData() {
-    // Check if the current department is Finance
+    // Check if the current department is OFFICE/DO
     const department = document.getElementById('department').value;
-    if (department === 'Finance') {
-        // Call the Finance-specific OT calculation function
-        applyFinanceOTCalculation();
+    if (department === 'OFFICE/DO') {
+        // Call the OFFICE/DO-specific OT calculation function
+        applyOfficeDOCalculation();
+    } else if (department === 'MO') {
+        // Call the MO-specific OT calculation function
+        applyMOCalculation();
     }
 
     // General save logic
