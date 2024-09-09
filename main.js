@@ -10,6 +10,9 @@ function populateMonthSelect() {
         "July", "August", "September", "October", "November", "December"
     ];
 
+    // Clear existing options
+    monthSelect.innerHTML = '';
+
     months.forEach((month, index) => {
         const option = document.createElement('option');
         option.value = index + 1;
@@ -64,7 +67,7 @@ function generateTable(user) {
     const tableBody = document.getElementById('tableBody');
     tableBody.innerHTML = '';
 
-    // Create table headers
+    // Create table headers only once
     const headerRow = document.createElement('tr');
     headerRow.innerHTML = `
         <th>Date</th>
