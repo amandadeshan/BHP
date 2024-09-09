@@ -41,7 +41,7 @@ function showTable(userBox) {
 
     for (let day = 1; day <= daysInMonth; day++) {
         const date = new Date(year, month - 1, day);
-        const dayOfWeek = date.toLocaleString('en-US', { weekday: 'long' });
+        const dayOfWeek = date.toLocaleDateString('en-US', { weekday: 'long' });
         const formattedDate = date.toISOString().split('T')[0];
 
         const row = document.createElement('tr');
