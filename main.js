@@ -1,3 +1,11 @@
+// Example user data categorized by department
+const usersByDepartment = {
+    "HR": ["John Doe", "Alice Brown"],
+    "Finance": ["Jane Smith", "Bob Johnson"],
+    "Sales": ["Robert Johnson", "Emily Davis"],
+    "Marketing": ["Jessica Lee", "Michael White"]
+};
+
 document.addEventListener('DOMContentLoaded', () => {
     populateMonthSelect();
     populateYearSelect();
@@ -31,7 +39,13 @@ function populateYearSelect() {
 }
 
 function populateDepartmentSelect() {
-    // If you need to dynamically populate departments, add logic here
+    const departmentSelect = document.getElementById('department');
+    Object.keys(usersByDepartment).forEach(department => {
+        const option = document.createElement('option');
+        option.value = department;
+        option.textContent = department;
+        departmentSelect.appendChild(option);
+    });
 }
 
 function openAddRemoveModal() {
@@ -44,8 +58,8 @@ function closeAddRemoveModal() {
 }
 
 function populateAddRemoveUserList() {
-    // Example list of users
-    const users = ["John Doe", "Jane Smith", "Robert Johnson", "Emily Davis"];
+    const department = document.getElementById('department').value;
+    const users = usersByDepartment[department] || [];
     const userList = document.getElementById('addRemoveUserList');
     userList.innerHTML = ''; // Clear previous content
 
@@ -82,21 +96,13 @@ function updateUserList() {
     // Clear existing user list
     userList.innerHTML = '';
 
-    // Example user data - this should be replaced with actual data fetching logic
-    const users = [
-        { name: "John Doe", department: "HR" },
-        { name: "Jane Smith", department: "Finance" },
-        { name: "Robert Johnson", department: "Sales" },
-        { name: "Emily Davis", department: "Marketing" }
-    ];
+    // Get users for the selected department
+    const users = usersByDepartment[department] || [];
 
-    // Filter users based on selected department
-    const filteredUsers = users.filter(user => user.department === department);
-
-    filteredUsers.forEach(user => {
+    users.forEach(user => {
         const userDiv = document.createElement('div');
         userDiv.className = 'user-box';
-        userDiv.textContent = user.name;
+        userDiv.textContent = user;
         userDiv.onclick = () => showUserTable(user, month, year);
         userList.appendChild(userDiv);
     });
@@ -104,7 +110,7 @@ function updateUserList() {
 
 function showUserTable(user, month, year) {
     const selectedUser = document.getElementById('selectedUser');
-    selectedUser.textContent = `User: ${user.name}`;
+    selectedUser.textContent = `User: ${user}`;
 
     // Generate dates for the selected month and year
     const tableBody = document.getElementById('tableBody');
