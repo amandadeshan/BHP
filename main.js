@@ -31,7 +31,7 @@ function populateYearSelect() {
 }
 
 function populateDepartmentSelect() {
-    // Future implementation if you need to populate departments dynamically
+    // If you need to dynamically populate departments, add logic here
 }
 
 function openAddRemoveModal() {
