@@ -67,23 +67,19 @@
         <div id="addRemoveModal" class="modal">
             <div class="modal-content">
                 <div class="modal-header">
-                    <span class="close" onclick="closeAddRemoveModal()">&times;</span>
                     <h2>Add/Remove Users</h2>
+                    <span class="close" onclick="closeAddRemoveModal()">&times;</span>
                 </div>
-                <div class="modal-body">
-                    <div id="addRemoveUserList"></div>
-                </div>
+                <div id="addRemoveUserList" class="user-list"></div>
                 <div class="modal-footer">
-                    <button onclick="addUser()">Add</button>
-                    <button onclick="removeUser()">Remove</button>
-                    <button onclick="closeAddRemoveModal()">Close</button>
+                    <button onclick="addUser()">Add User</button>
+                    <button onclick="removeUser()">Remove User</button>
                 </div>
             </div>
         </div>
     </div>
-
-    <script src="main.js"></script>
     <script src="office-do.js"></script>
     <script src="mo.js"></script>
+    <script src="main.js"></script>
 </body>
 </html>
