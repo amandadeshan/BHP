@@ -67,16 +67,35 @@ function generateTable(user) {
     const tableBody = document.getElementById('tableBody');
     tableBody.innerHTML = '';
 
-    // Create table headers
-    const headerRow = document.createElement('tr');
-    headerRow.innerHTML = `
-        <th>Date</th>
-        <th>Day</th>
-        <th>In</th>
-        <th>Out</th>
-        <th>OT</th>
-    `;
-    tableBody.appendChild(headerRow);
+    // Get the table element and thead
+    const table = document.querySelector('#userTable table');
+    let thead = table.querySelector('thead');
+
+    if (!thead) {
+        // Create thead if it doesn't exist
+        thead = table.createTHead();
+    }
+    
+    const headerRow = thead.querySelector('tr');
+    if (headerRow) {
+        headerRow.innerHTML = `
+            <th>Date</th>
+            <th>Day</th>
+            <th>In</th>
+            <th>Out</th>
+            <th>OT</th>
+        `;
+    } else {
+        // Create header row if it doesn't exist
+        const newHeaderRow = thead.insertRow();
+        newHeaderRow.innerHTML = `
+            <th>Date</th>
+            <th>Day</th>
+            <th>In</th>
+            <th>Out</th>
+            <th>OT</th>
+        `;
+    }
 
     // Get the number of days in the selected month
     const daysInMonth = new Date(year, month, 0).getDate();
