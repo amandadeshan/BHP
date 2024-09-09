@@ -80,7 +80,7 @@ function generateTable(user) {
 
     // Create rows for each day in the month
     for (let day = 1; day <= daysInMonth; day++) {
-        const date = new Date(year, month - 1, day);
+        const date = new Date(year, month - 1, day); // Correct month index
         const dayName = date.toLocaleDateString('en-US', { weekday: 'long' });
 
         const row = document.createElement('tr');
