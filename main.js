@@ -97,13 +97,12 @@ function generateTable(user) {
         row.innerHTML = `
             <td>${day}</td>
             <td>${dayName}</td>
-            <td><input type="text" class="time-input" placeholder="In" maxlength="5"></td>
-            <td><input type="text" class="time-input" placeholder="Out" maxlength="5"></td>
+            <td><input type="text" class="time-input" placeholder="In" maxlength="7"></td>
+            <td><input type="text" class="time-input" placeholder="Out" maxlength="7"></td>
             <td class="ot-hours">0</td>
         `;
         tableBody.appendChild(row);
 
-        // Attach input event listeners for formatting
         row.querySelectorAll('.time-input').forEach(input => {
             input.addEventListener('input', formatTimeInput);
         });
@@ -111,32 +110,31 @@ function generateTable(user) {
 }
 
 function formatTimeInput(event) {
-    let value = event.target.value.replace(/[^0-9]/g, ''); // Remove non-numeric characters
+    let value = event.target.value.toUpperCase().replace(/[^0-9APM/]/g, ''); // Remove invalid characters
     let hours, minutes, period = 'AM';
 
-    if (value.length > 0) {
-        // Determine hours and minutes
-        if (value.length <= 2) {
-            hours = value.slice(0, 2);
-            minutes = '00';
-        } else {
-            hours = value.slice(0, 2);
-            minutes = value.slice(2, 4);
+    // Split the input into parts
+    let parts = value.split('/');
+    if (parts.length >= 2) {
+        hours = parts[0];
+        minutes = parts[1];
+        if (parts.length === 3 && (parts[2] === 'AM' || parts[2] === 'PM')) {
+            period = parts[2];
         }
 
+        // Adjust hours and minutes
         hours = parseInt(hours, 10);
-        if (hours >= 12) {
-            period = 'PM';
-            if (hours > 12) {
-                hours -= 12;
-            }
-        }
-        if (hours === 0) {
-            hours = 12; // Midnight is 12:00 AM
-        }
+        minutes = parseInt(minutes, 10);
+
+        if (isNaN(hours)) hours = 0;
+        if (isNaN(minutes)) minutes = 0;
+        if (minutes >= 60) minutes = 59; // Max minutes
+
+        if (hours > 12) hours = 12; // Max hours in 12-hour format
+        if (hours === 0) hours = 12; // Midnight is 12:00 AM
 
         // Format time
-        event.target.value = `${hours.toString().padStart(2, '0')}:${minutes.padEnd(2, '0')} ${period}`;
+        event.target.value = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')} ${period}`;
     } else {
         event.target.value = '';
     }
