@@ -1,6 +1,6 @@
 // Example user data categorized by department
 const usersByDepartment = {
-    "HR": ["K.P.I.Malkanthi", "W.D.R.C.Wijesiri", "A.M.R.T.Atapaththu", "N.M.R.Abeynayaka", "J.M.C.N.Jayasundara", "K.M.Nihal", "M.R.Ansifa", "W.M.S.R.Rajapaksha", "M.J.J.Mohomed", "A.C.Naushad", "V.L.S.De Mel", "H.M.I.D.Herath", "H.P.U.Manjula", "M.F.M.Fasarath", "L.I.Chandrasekera", "J.D.Jegadhalini", "H.P.D.P.N.Gunathilaka", "S.M.Sacky", "R.R.Shareef", D.M.M.Diwakara", "H.M.P.Herath", "A.M.Arshath"],
+    "HR": ["K.P.I.Malkanthi", "W.D.R.C.Wijesiri", "A.M.R.T.Atapaththu", "N.M.R.Abeynayaka", "J.M.C.N.Jayasundara", "K.M.Nihal", "M.R.Ansifa", "W.M.S.R.Rajapaksha", "M.J.J.Mohomed", "A.C.Naushad", "V.L.S.De Mel", "H.M.I.D.Herath", "H.P.U.Manjula", "M.F.M.Fasarath", "L.I.Chandrasekera", "J.D.Jegadhalini", "H.P.D.P.N.Gunathilaka", "S.M.Sacky", "R.R.Shareef", "D.M.M.Diwakara", "H.M.P.Herath", "A.M.Arshath"],
     "Finance": ["Jane Smith", "Bob Johnson"],
     "Sales": ["Robert Johnson", "Emily Davis"],
     "Marketing": ["Jessica Lee", "Michael White"]
