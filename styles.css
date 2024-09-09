@@ -1,192 +1,90 @@
-/* Global Styles */
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
-    color: #333;
-    background-color: #f4f7f6;
-    background: linear-gradient(135deg, rgba(116, 235, 213, 0.8), rgba(172, 182, 229, 0.8)), url('https://raw.githubusercontent.com/amandadeshan/BHP/main/pexels-jplenio-1103970.jpg') no-repeat center center fixed;
-    background-size: cover;
 }
 
-/* Container for centering content */
 .container {
-    max-width: 1200px;
+    width: 80%;
     margin: 0 auto;
     padding: 20px;
-    background: rgba(255, 255, 255, 0.9);
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-/* Header Styling */
-header h1 {
+header {
     text-align: center;
-    color: #333;
-    font-size: 2.5em;
-    margin-bottom: 30px;
-    font-weight: 700;
+    margin-bottom: 20px;
 }
 
-/* Controls Section */
 .controls {
-    text-align: center;
-    margin-bottom: 30px;
-}
-
-label {
-    font-weight: bold;
-    margin-right: 15px;
-    color: #555;
+    margin-bottom: 20px;
 }
 
 select, button {
-    padding: 12px 20px;
-    margin: 5px;
-    border: 1px solid #007bff;
-    border-radius: 4px;
-    background-color: #fff;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    font-size: 16px;
+    margin-right: 10px;
 }
 
-select {
-    margin-right: 20px;
-}
-
-button {
-    background-color: #007bff;
-    color: white;
-    font-weight: bold;
-    cursor: pointer;
-    transition: background-color 0.3s, transform 0.3s;
-}
-
-button:hover {
-    background-color: #0056b3;
-    transform: translateY(-2px);
-}
-
-/* User List Styling */
 .user-list {
     display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    margin-bottom: 30px;
+    flex-direction: column;
+    margin-bottom: 20px;
 }
 
 .user-box {
-    background-color: #fff;
-    border: 2px solid #007bff;
-    padding: 20px;
-    margin: 10px;
-    border-radius: 8px;
+    padding: 10px;
+    margin: 5px 0;
+    border: 1px solid #ccc;
     cursor: pointer;
-    transition: transform 0.3s, box-shadow 0.3s;
 }
 
-.user-box:hover {
-    transform: scale(1.05);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-}
-
-/* Table Container Styling */
 .table-container {
-    display: block;
-    background-color: #fff;
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    padding: 20px;
     margin-top: 20px;
-    overflow-x: auto;
-    border: 2px solid #007bff; /* Outline border */
 }
 
-/* Table Styling */
 table {
     width: 100%;
     border-collapse: collapse;
-    font-size: 16px;
-    border: 1px solid #ddd; /* Table border */
 }
 
-thead {
-    background-color: #007bff;
-    color: #fff;
+table, th, td {
+    border: 1px solid #ddd;
 }
 
 th, td {
-    padding: 12px;
-    text-align: left;
-    border: 1px solid #ddd; /* Cell borders */
-}
-
-th {
-    background-color: #0056b3;
-    font-weight: bold;
-}
-
-tr:nth-child(even) {
-    background-color: #f9f9f9;
-}
-
-tr:hover {
-    background-color: #f1f1f1;
-}
-
-/* Input field styling */
-input.time-input {
-    width: 100%;
     padding: 10px;
-    box-sizing: border-box;
-    border: 1px solid #007bff;
-    border-radius: 4px;
-    font-size: 16px;
+    text-align: left;
 }
 
-/* Table Footer Styling */
-.table-footer {
-    text-align: center;
-    margin-top: 20px;
-    border-top: 1px solid #ddd; /* Separator line */
-    padding-top: 10px;
-}
-
-.table-footer button {
-    margin: 0 5px;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 4px;
-    background-color: #007bff;
-    color: #fff;
-    font-weight: bold;
-    cursor: pointer;
-    transition: background-color 0.3s, transform 0.3s;
-}
-
-.table-footer button:hover {
-    background-color: #0056b3;
-    transform: translateY(-2px);
-}
-
-/* Modal Styling */
 .modal {
     display: none;
     position: fixed;
-    z-index: 1000;
+    z-index: 1;
     left: 0;
     top: 0;
     width: 100%;
     height: 100%;
     overflow: auto;
-    background-color: rgba(0, 0, 0, 0.5);
+    background-color: rgb(0,0,0);
+    background-color: rgba(0,0,0,0.4);
 }
 
 .modal-content {
-    background-color: #fff;
-    margin: 10% auto;
+    background-color: #fefefe;
+    margin: 15% auto;
     padding: 20px;
-    border: 1px solid #ddd;
+    border: 1px solid #888;
     width: 80%;
-    max-width: 600px;
-    border-radius
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
