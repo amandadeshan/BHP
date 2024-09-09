@@ -23,6 +23,9 @@ function populateMonthSelect() {
         option.textContent = month;
         monthSelect.appendChild(option);
     });
+
+    // Add event listener for month change
+    monthSelect.addEventListener('change', updateUserList);
 }
 
 function populateYearSelect() {
@@ -34,6 +37,9 @@ function populateYearSelect() {
         option.textContent = year;
         yearSelect.appendChild(option);
     }
+
+    // Add event listener for year change
+    yearSelect.addEventListener('change', updateUserList);
 }
 
 function populateDepartmentSelect() {
@@ -96,15 +102,16 @@ function updateUserList() {
 
     userList.innerHTML = ''; // Clear existing user list
 
-    const users = usersByDepartment[department] || [];
-
-    users.forEach(user => {
-        const userDiv = document.createElement('div');
-        userDiv.className = 'user-box';
-        userDiv.textContent = user;
-        userDiv.onclick = () => showUserTable(user, month, year);
-        userList.appendChild(userDiv);
-    });
+    if (department && month && year) {
+        const users = usersByDepartment[department] || [];
+        users.forEach(user => {
+            const userDiv = document.createElement('div');
+            userDiv.className = 'user-box';
+            userDiv.textContent = user;
+            userDiv.onclick = () => showUserTable(user, month, year);
+            userList.appendChild(userDiv);
+        });
+    }
 }
 
 function showUserTable(user, month, year) {
@@ -116,10 +123,6 @@ function showUserTable(user, month, year) {
     tableBody.innerHTML = ''; // Clear existing table rows
 
     const daysInMonth = new Date(year, month, 0).getDate();
-    const monthNames = [
-        "January", "February", "March", "April", "May", "June", 
-        "July", "August", "September", "October", "November", "December"
-    ];
 
     for (let day = 1; day <= daysInMonth; day++) {
         const date = new Date(year, month - 1, day);
