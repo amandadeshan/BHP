@@ -22,16 +22,22 @@ body {
     50% { background-position: 100% 100%; }
     100% { background-position: 0% 0%; }
 }
+
+/* Container for centering content */
 .container {
     max-width: 1200px;
     margin: 0 auto;
     padding: 20px;
 }
+
+/* Header styling */
 header h1 {
     text-align: center;
     color: #444;
     margin-bottom: 20px;
 }
+
+/* Controls section */
 .controls {
     text-align: center;
     margin-bottom: 20px;
@@ -61,6 +67,8 @@ button {
 button:hover {
     background-color: #0056b3;
 }
+
+/* User list styling */
 .user-list {
     display: flex;
     flex-wrap: wrap;
@@ -79,17 +87,17 @@ button:hover {
 .user-box:hover {
     transform: scale(1.05);
 }
+
+/* Table container styling */
 .table-container {
-    display: none;
+    display: none; /* Hidden by default; shown when a user is selected */
     background-color: #fff;
     border-radius: 8px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     padding: 20px;
 }
-.table-header {
-    margin-bottom: 15px;
-    font-weight: bold;
-}
+
+/* Table styling */
 table {
     width: 100%;
     border-collapse: collapse;
@@ -103,6 +111,12 @@ th {
     background-color: #007bff;
     color: #fff;
 }
+td {
+    background-color: #fff;
+}
+tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
 input.time-input {
     width: 100%;
     padding: 8px;
@@ -112,8 +126,10 @@ input.time-input {
     text-align: center;
     margin-top: 20px;
 }
+
+/* Modal styling */
 .modal {
-    display: none;
+    display: none; /* Hidden by default; shown when needed */
     position: fixed;
     z-index: 1000;
     left: 0;
@@ -151,4 +167,4 @@ input.time-input {
 }
 .close:hover {
     color: #f00;
-}                                                          
+}
