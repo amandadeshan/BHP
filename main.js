@@ -1,4 +1,4 @@
-// script.js
+// main.js
 
 document.addEventListener('DOMContentLoaded', function() {
     updateUserList(); // Populate user list on page load
@@ -58,7 +58,6 @@ function showTable(userBox) {
         tableBody.appendChild(row);
     }
 
-    document.getElementById('tableHeader').innerText = `OT Calculation for ${user}`;
     document.getElementById('selectedUser').innerText = `Selected User: ${user}`;
     document.getElementById('userTable').style.display = 'block';
 
