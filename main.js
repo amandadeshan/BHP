@@ -111,29 +111,29 @@ function generateTable(user) {
 }
 
 function formatTimeInput(event) {
-    let value = event.target.value;
+    let value = event.target.value.replace(/[^0-9]/g, ''); // Remove non-numeric characters
+    let hours, minutes, period = 'AM';
 
-    // Remove any non-numeric characters (except colon)
-    value = value.replace(/[^0-9:]/g, '');
+    if (value.length > 0) {
+        // Determine hours
+        hours = value.slice(0, 2) || '00'; // Get first two digits or default to '00'
+        minutes = value.slice(2, 4) || '00'; // Get next two digits or default to '00'
 
-    // Format the time string
-    let [hours, minutes] = value.split(':');
-    hours = hours ? hours.padStart(2, '0') : '00';
-    minutes = minutes ? minutes.padEnd(2, '0') : '00';
-
-    let period = 'AM';
-    if (parseInt(hours) >= 12) {
-        period = 'PM';
-        if (parseInt(hours) > 12) {
-            hours = (parseInt(hours) - 12).toString().padStart(2, '0');
+        hours = parseInt(hours, 10);
+        if (hours >= 12) {
+            period = 'PM';
+            if (hours > 12) {
+                hours -= 12;
+            }
         }
-    }
+        if (hours === 0) {
+            hours = 12; // Midnight is 12:00 AM
+        }
 
-    if (hours === '00') {
-        hours = '12';
+        event.target.value = `${hours.toString().padStart(2, '0')}:${minutes.padEnd(2, '0')} ${period}`;
+    } else {
+        event.target.value = '';
     }
-
-    event.target.value = `${hours}:${minutes} ${period}`;
 }
 
 function saveData() {
