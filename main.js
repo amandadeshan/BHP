@@ -64,42 +64,34 @@ function generateTable(user) {
     const tableBody = document.getElementById('tableBody');
     tableBody.innerHTML = '';
 
+    // Create table headers
+    const headerRow = document.createElement('tr');
+    headerRow.innerHTML = `
+        <th>Date</th>
+        <th>Day</th>
+        <th>In</th>
+        <th>Out</th>
+        <th>OT</th>
+    `;
+    tableBody.appendChild(headerRow);
+
     // Get the number of days in the selected month
     const daysInMonth = new Date(year, month, 0).getDate();
-    // Get the day of the week for the 1st of the month
-    const firstDay = new Date(year, month - 1, 1).getDay();
 
-    // Create empty cells for days before the start of the month
-    let tr = document.createElement('tr');
-    for (let i = 0; i < firstDay; i++) {
-        tr.innerHTML += '<td></td>';
-    }
-
-    // Create cells for each day in the month
+    // Create rows for each day in the month
     for (let day = 1; day <= daysInMonth; day++) {
         const date = new Date(year, month - 1, day);
         const dayName = date.toLocaleDateString('en-US', { weekday: 'long' });
 
-        tr.innerHTML += `
-            <td>
-                <div>${day}</div>
-                <div>${dayName}</div>
-                <input type="text" class="time-input" placeholder="In Time">
-                <input type="text" class="time-input" placeholder="Out Time">
-                <div class="ot-hours">0</div>
-            </td>
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>${day}</td>
+            <td>${dayName}</td>
+            <td><input type="text" class="time-input" placeholder="In"></td>
+            <td><input type="text" class="time-input" placeholder="Out"></td>
+            <td class="ot-hours">0</td>
         `;
-
-        // If the row is full, append it to the table
-        if ((firstDay + day) % 7 === 0) {
-            tableBody.appendChild(tr);
-            tr = document.createElement('tr');
-        }
-    }
-
-    // Append the last row if it has any content
-    if (tr.innerHTML.trim() !== '') {
-        tableBody.appendChild(tr);
+        tableBody.appendChild(row);
     }
 }
 
