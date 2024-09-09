@@ -14,23 +14,12 @@
         </header>
         <div class="controls">
             <label for="month">Select Month:</label>
-            <select id="month" onchange="updateUserList()">
-                <option value="01">January</option>
-                <option value="02">February</option>
-                <option value="03">March</option>
-                <option value="04">April</option>
-                <option value="05">May</option>
-                <option value="06">June</option>
-                <option value="07">July</option>
-                <option value="08">August</option>
-                <option value="09">September</option>
-                <option value="10">October</option>
-                <option value="11">November</option>
-                <option value="12">December</option>
+            <select id="month">
+                <!-- Options will be populated by JavaScript -->
             </select>
 
             <label for="department">Select Department:</label>
-            <select id="department" onchange="updateUserList()">
+            <select id="department">
                 <option value="BHP">BHP</option>
                 <option value="HR">HR</option>
                 <option value="Finance">Finance</option>
@@ -42,7 +31,7 @@
 
         <div id="userList" class="user-list"></div>
 
-        <div id="userTable" class="table-container">
+        <div id="userTable" class="table-container" style="display: none;">
             <div id="selectedUser" class="table-header"></div>
             <table>
                 <thead>
@@ -85,4 +74,3 @@
     <script src="main.js"></script>
 </body>
 </html>
-
