@@ -74,57 +74,39 @@ button:hover {
     margin: 10px;
     border-radius: 8px;
     cursor: pointer;
-    transition: background-color 0.3s, transform 0.3s;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    text-align: center;
+    transition: transform 0.3s;
 }
 .user-box:hover {
-    background-color: #e7f3ff;
     transform: scale(1.05);
 }
 .table-container {
     display: none;
-    margin-top: 30px;
     background-color: #fff;
     border-radius: 8px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     padding: 20px;
-}
-.table-header {
-    text-align: center;
-    margin-bottom: 20px;
-    font-weight: bold;
 }
 table {
     width: 100%;
     border-collapse: collapse;
 }
 th, td {
-    border: 1px solid #ddd;
-    padding: 10px;
-    text-align: center;
-    color: #333;
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
 }
 th {
     background-color: #007bff;
-    color: white;
+    color: #fff;
 }
-.time-input {
-    width: 100px;
-    text-align: center;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    padding: 5px;
-    background-color: #fff;
-}
-.time-input:focus {
-    outline: none;
-    border-color: #007bff;
-    box-shadow: 0 0 4px rgba(0, 123, 255, 0.2);
+input.time-input {
+    width: 100%;
+    padding: 8px;
+    box-sizing: border-box;
 }
 .table-footer {
     text-align: center;
-    margin-top: 15px;
+    margin-top: 20px;
 }
 .modal {
     display: none;
@@ -136,8 +118,6 @@ th {
     height: 100%;
     overflow: auto;
     background-color: rgba(0, 0, 0, 0.4);
-    justify-content: center;
-    align-items: center;
 }
 .modal-content {
     background-color: #fefefe;
@@ -146,25 +126,25 @@ th {
     border: 1px solid #888;
     width: 80%;
     max-width: 600px;
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 .modal-header {
     padding: 10px;
-    background: #007bff;
-    color: #fff;
     border-bottom: 1px solid #ddd;
-    font-size: 18px;
-    border-radius: 8px 8px 0 0;
-}
-.modal-body {
-    padding: 20px;
+    position: relative;
 }
 .modal-footer {
     padding: 10px;
-    text-align: right;
     border-top: 1px solid #ddd;
+    text-align: right;
 }
-.user-list-item {
-    margin-bottom: 10px;
+.close {
+    position: absolute;
+    top: 10px;
+    right: 25px;
+    font-size: 30px;
+    font-weight: bold;
+    cursor: pointer;
+}
+.close:hover {
+    color: #f00;
 }
