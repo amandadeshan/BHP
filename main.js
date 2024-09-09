@@ -49,10 +49,10 @@ function getUsersByDepartment(department) {
     return allUsers[department] || [];
 }
 
-function showTable(user) {
-    document.getElementById('selectedUser').textContent = `Selected User: ${user.textContent}`;
+function showTable(userBox) {
+    document.getElementById('selectedUser').textContent = `Selected User: ${userBox.textContent}`;
     document.getElementById('userTable').style.display = 'block';
-    generateTable(user.textContent);
+    generateTable(userBox.textContent);
 }
 
 function generateTable(user) {
