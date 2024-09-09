@@ -1,3 +1,9 @@
+// Example user data categorized by department
+const usersByDepartment = {
+    "OFFICE/DO": ["John Doe", "Alice Brown"],
+    "MO": ["Jane Smith", "Bob Johnson"]
+};
+
 document.addEventListener('DOMContentLoaded', () => {
     populateMonthSelect();
     populateYearSelect();
@@ -32,8 +38,7 @@ function populateYearSelect() {
 
 function populateDepartmentSelect() {
     const departmentSelect = document.getElementById('department');
-    const departments = ["OFFICE/DO", "MO"];
-    departments.forEach(department => {
+    Object.keys(usersByDepartment).forEach(department => {
         const option = document.createElement('option');
         option.value = department;
         option.textContent = department;
@@ -124,44 +129,46 @@ function showUserTable(user, month, year) {
         row.innerHTML = `
             <td>${day}</td>
             <td>${dayName}</td>
-            <td><input type="time" class="time-input" placeholder="Enter In"></td>
-            <td><input type="time" class="time-input" placeholder="Enter Out"></td>
+            <td><input type="number" class="time-input" step="0.01" placeholder="Enter In"></td>
+            <td><input type="number" class="time-input" step="0.01" placeholder="Enter Out"></td>
             <td><input type="text" class="time-input" readonly></td>
         `;
 
         tableBody.appendChild(row);
     }
 
+    document.getElementById('userList').style.display = 'none';
+    document.querySelector('.controls').style.display = 'none';
     document.getElementById('userTable').style.display = 'block';
+}
+
+function saveData() {
+    // Check if the current department is OFFICE/DO or MO
+    const department = document.getElementById('department').value;
+    if (department === 'OFFICE/DO') {
+        // Call the OFFICE/DO-specific OT calculation function
+        applyOfficeDOCalculation();
+    } else if (department === 'MO') {
+        // Call the MO-specific OT calculation function
+        applyMOCalculation();
+    }
+
+    // General save logic
+    console.log('Data saved');
+}
+
+function completeUser() {
+    // Complete user data logic
+    console.log('User data completed');
 }
 
 function goBack() {
     document.getElementById('userTable').style.display = 'none';
+    document.querySelector('.controls').style.display = 'block';
+    document.querySelector('.user-list').style.display = 'flex';
 }
 
-function saveData() {
-    // Save data logic
-    console.log('Save data');
-}
-
-function completeUser() {
-    // Complete user logic
-    console.log('Complete user');
-}
-
-function applyFastEntry() {
-    const fastIn = document.getElementById('fastIn').value;
-    const fastOut = document.getElementById('fastOut').value;
-
-    if (fastIn && fastOut) {
-        // Get all "In" and "Out" time inputs in the table
-        const timeInputs = document.querySelectorAll('#tableBody .time-input');
-        
-        timeInputs.forEach((input, index) => {
-            if (index % 4 === 2) input.value = fastIn; // Set In Time
-            else if (index % 4 === 3) input.value = fastOut; // Set Out Time
-        });
-    } else {
-        alert('Please select both In and Out times.');
-    }
-}
+// Add event listeners for selection changes
+document.getElementById('month').addEventListener('change', updateUserList);
+document.getElementById('year').addEventListener('change', updateUserList);
+document.getElementById('department').addEventListener('change', updateUserList);
