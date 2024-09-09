@@ -1,19 +1,19 @@
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', () => {
     updateUserList();
 });
 
 function updateUserList() {
     const department = document.getElementById('department').value;
-    const userList = document.getElementById('userList');
-    userList.innerHTML = '';
-
     const users = getUsersByDepartment(department);
+    const userList = document.getElementById('userList');
+
+    userList.innerHTML = '';
 
     users.forEach(user => {
         const userBox = document.createElement('div');
         userBox.className = 'user-box';
-        userBox.textContent = user;
         userBox.dataset.user = user;
+        userBox.innerText = user;
         userBox.onclick = () => showTable(userBox);
         userList.appendChild(userBox);
     });
@@ -48,7 +48,7 @@ function showTable(userBox) {
         row.innerHTML = `
             <td>${formattedDate}</td>
             <td>${dayOfWeek}</td>
-            <td><input type="text" class="time-input in-time" placeholder="e.g., 08:00 PM" /></td>
+            <td><input type="text" class="time-input in-time" placeholder="e.g., 08:00 AM" /></td>
             <td><input type="text" class="time-input out-time" placeholder="e.g., 05:00 PM" /></td>
             <td class="ot-hours">0</td>
         `;
