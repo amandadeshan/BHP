@@ -4,7 +4,7 @@ body {
     margin: 0;
     padding: 0;
     color: #333;
-    background-color: #f4f7f6; /* Fallback color */
+    background-color: #f4f7f6;
     background: linear-gradient(135deg, rgba(116, 235, 213, 0.8), rgba(172, 182, 229, 0.8)), url('https://raw.githubusercontent.com/amandadeshan/BHP/main/pexels-jplenio-1103970.jpg') no-repeat center center fixed;
     background-size: cover;
 }
@@ -14,7 +14,7 @@ body {
     max-width: 1200px;
     margin: 0 auto;
     padding: 20px;
-    background: rgba(255, 255, 255, 0.9); /* Slightly transparent white background for content */
+    background: rgba(255, 255, 255, 0.9);
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
@@ -97,42 +97,76 @@ button:hover {
     border-radius: 8px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     padding: 20px;
-    overflow-x: auto;
     margin-top: 20px;
+    overflow-x: auto;
+    border: 2px solid #007bff; /* Outline border */
 }
 
+/* Table Styling */
 table {
     width: 100%;
     border-collapse: collapse;
+    font-size: 16px;
+    border: 1px solid #ddd; /* Table border */
+}
+
+thead {
+    background-color: #007bff;
+    color: #fff;
 }
 
 th, td {
     padding: 12px;
     text-align: left;
-    border-bottom: 1px solid #ddd;
+    border: 1px solid #ddd; /* Cell borders */
 }
 
 th {
-    background-color: #007bff;
-    color: #fff;
+    background-color: #0056b3;
     font-weight: bold;
 }
 
+tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+tr:hover {
+    background-color: #f1f1f1;
+}
+
+/* Input field styling */
 input.time-input {
     width: 100%;
     padding: 10px;
     box-sizing: border-box;
-    border: 1px solid #ccc;
+    border: 1px solid #007bff;
     border-radius: 4px;
+    font-size: 16px;
 }
 
+/* Table Footer Styling */
 .table-footer {
     text-align: center;
     margin-top: 20px;
+    border-top: 1px solid #ddd; /* Separator line */
+    padding-top: 10px;
 }
 
 .table-footer button {
     margin: 0 5px;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    background-color: #007bff;
+    color: #fff;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.3s;
+}
+
+.table-footer button:hover {
+    background-color: #0056b3;
+    transform: translateY(-2px);
 }
 
 /* Modal Styling */
@@ -155,31 +189,4 @@ input.time-input {
     border: 1px solid #ddd;
     width: 80%;
     max-width: 600px;
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-
-.modal-header {
-    padding: 10px;
-    border-bottom: 1px solid #ddd;
-    position: relative;
-}
-
-.modal-footer {
-    padding: 10px;
-    border-top: 1px solid #ddd;
-    text-align: right;
-}
-
-.close {
-    position: absolute;
-    top: 10px;
-    right: 15px;
-    font-size: 24px;
-    font-weight: bold;
-    cursor: pointer;
-}
-
-.close:hover {
-    color: #f00;
-}
+    border-radius
