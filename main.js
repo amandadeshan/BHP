@@ -97,8 +97,8 @@ function generateTable(user) {
         row.innerHTML = `
             <td>${day}</td>
             <td>${dayName}</td>
-            <td><input type="text" class="time-input" placeholder="In" maxlength="5"></td>
-            <td><input type="text" class="time-input" placeholder="Out" maxlength="5"></td>
+            <td><input type="text" class="time-input" placeholder="In" maxlength="7"></td>
+            <td><input type="text" class="time-input" placeholder="Out" maxlength="7"></td>
             <td class="ot-hours">0</td>
         `;
         tableBody.appendChild(row);
@@ -111,7 +111,7 @@ function generateTable(user) {
 
 function formatTimeInput(event) {
     const input = event.target;
-    let value = input.value.replace(/\D/g, ''); // Remove non-numeric characters
+    let value = input.value.replace(/[^0-9]/g, ''); // Remove non-numeric characters
 
     if (value.length > 4) {
         value = value.slice(0, 4); // Limit to 4 digits
