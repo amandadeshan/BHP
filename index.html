@@ -3,17 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OT Calculation</title>
+    <title>Employee OT Tracker</title>
     <style>
-        /* Styles */
         body {
             font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        select, button, input {
+            margin: 5px;
+            padding: 10px;
+            font-size: 16px;
         }
         .user-box {
             margin: 5px;
             padding: 10px;
             border: 1px solid #ccc;
             cursor: pointer;
+            border-radius: 5px;
         }
         .user-box.saved {
             background-color: #d4edda;
@@ -24,6 +30,12 @@
         #userTable {
             display: none;
             margin-top: 20px;
+            width: 100%;
+            border-collapse: collapse;
+        }
+        #userTable th, #userTable td {
+            border: 1px solid #ddd;
+            padding: 8px;
         }
         #addRemoveModal {
             display: none;
@@ -40,9 +52,6 @@
             background: #fff;
             padding: 20px;
             border-radius: 5px;
-        }
-        #addRemoveModal button {
-            margin-top: 10px;
         }
     </style>
 </head>
