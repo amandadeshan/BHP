@@ -97,8 +97,8 @@ function generateTable(user) {
         row.innerHTML = `
             <td>${day}</td>
             <td>${dayName}</td>
-            <td><input type="text" class="time-input" placeholder="In" maxlength="7"></td>
-            <td><input type="text" class="time-input" placeholder="Out" maxlength="7"></td>
+            <td><input type="text" class="time-input" placeholder="In" maxlength="5"></td>
+            <td><input type="text" class="time-input" placeholder="Out" maxlength="5"></td>
             <td class="ot-hours">0</td>
         `;
         tableBody.appendChild(row);
@@ -110,29 +110,24 @@ function generateTable(user) {
 }
 
 function formatTimeInput(event) {
-    let value = event.target.value;
-    if (!/^\d{1,4}$/.test(value)) return; // Only allow up to 4 digits
+    const input = event.target;
+    let value = input.value.replace(/\D/g, ''); // Remove non-numeric characters
 
-    let hours, minutes, period;
-
-    if (value.length <= 2) {
-        // e.g., 8 or 23
-        hours = parseInt(value, 10);
-        minutes = 0;
-        period = 'AM';
-    } else {
-        // e.g., 823 or 1534
-        hours = parseInt(value.slice(0, -2), 10);
-        minutes = parseInt(value.slice(-2), 10);
-        period = hours >= 12 ? 'PM' : 'AM';
+    if (value.length > 4) {
+        value = value.slice(0, 4); // Limit to 4 digits
     }
 
-    if (hours > 12) hours -= 12;
-    if (hours === 0) hours = 12; // Midnight or Noon
+    if (value.length <= 2) {
+        value = value.padStart(2, '0'); // Ensure at least 2 digits
+        input.value = `${value}:00 AM`;
+    } else {
+        const hours = parseInt(value.slice(0, -2), 10);
+        const minutes = value.slice(-2);
+        const period = hours >= 12 ? 'PM' : 'AM';
 
-    if (minutes >= 60) minutes = 59; // Max minutes
-
-    event.target.value = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')} ${period}`;
+        const formattedHours = hours % 12 || 12; // Convert 24-hour to 12-hour format
+        input.value = `${formattedHours.toString().padStart(2, '0')}:${minutes.padStart(2, '0')} ${period}`;
+    }
 }
 
 function saveData() {
