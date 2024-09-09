@@ -67,7 +67,7 @@ function generateTable(user) {
     const tableBody = document.getElementById('tableBody');
     tableBody.innerHTML = '';
 
-    // Create table headers only once
+    // Create table headers
     const headerRow = document.createElement('tr');
     headerRow.innerHTML = `
         <th>Date</th>
