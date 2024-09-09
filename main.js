@@ -1,5 +1,10 @@
+// Define the users by department
+const usersByDepartment = {
+    "OFFICE/DO": ["User1", "User2"],
+    "MO": ["User3"]
+};
+
 document.addEventListener('DOMContentLoaded', () => {
-    console.log('DOM loaded');
     populateMonthSelect();
     populateYearSelect();
     populateDepartmentSelect();
@@ -18,7 +23,6 @@ function populateMonthSelect() {
         option.textContent = month;
         monthSelect.appendChild(option);
     });
-    console.log('Month select populated');
 }
 
 function populateYearSelect() {
@@ -30,7 +34,6 @@ function populateYearSelect() {
         option.textContent = year;
         yearSelect.appendChild(option);
     }
-    console.log('Year select populated');
 }
 
 function populateDepartmentSelect() {
@@ -42,11 +45,9 @@ function populateDepartmentSelect() {
         option.textContent = department;
         departmentSelect.appendChild(option);
     });
-    departmentSelect.addEventListener('change', () => {
-        console.log('Department changed to:', departmentSelect.value);
-        updateUserList();
-    });
-    console.log('Department select populated');
+
+    // Add event listener for department change
+    departmentSelect.addEventListener('change', updateUserList);
 }
 
 function openAddRemoveModal() {
@@ -60,7 +61,6 @@ function closeAddRemoveModal() {
 
 function populateAddRemoveUserList() {
     const department = document.getElementById('department').value;
-    console.log('Populating add/remove user list for department:', department);
     const users = usersByDepartment[department] || [];
     const userList = document.getElementById('addRemoveUserList');
     userList.innerHTML = ''; // Clear previous content
@@ -80,23 +80,23 @@ function selectUser(user) {
 
 function addUser() {
     console.log('Add user clicked');
+    // Implement logic to add user
 }
 
 function removeUser() {
     console.log('Remove user clicked');
+    // Implement logic to remove user
 }
 
 function updateUserList() {
     const month = document.getElementById('month').value;
     const year = document.getElementById('year').value;
     const department = document.getElementById('department').value;
-    console.log('Updating user list for', { month, year, department });
-
     const userList = document.getElementById('userList');
+
     userList.innerHTML = ''; // Clear existing user list
 
     const users = usersByDepartment[department] || [];
-    console.log("Users:", users);
 
     users.forEach(user => {
         const userDiv = document.createElement('div');
@@ -108,19 +108,25 @@ function updateUserList() {
 }
 
 function showUserTable(user, month, year) {
-    console.log(`Showing table for user: ${user}, Month: ${month}, Year: ${year}`);
     const selectedUser = document.getElementById('selectedUser');
     selectedUser.textContent = `User: ${user}`;
 
+    // Generate dates for the selected month and year
     const tableBody = document.getElementById('tableBody');
     tableBody.innerHTML = ''; // Clear existing table rows
 
     const daysInMonth = new Date(year, month, 0).getDate();
+    const monthNames = [
+        "January", "February", "March", "April", "May", "June", 
+        "July", "August", "September", "October", "November", "December"
+    ];
+
     for (let day = 1; day <= daysInMonth; day++) {
         const date = new Date(year, month - 1, day);
         const dayName = date.toLocaleDateString('en-US', { weekday: 'long' });
 
         const row = document.createElement('tr');
+
         row.innerHTML = `
             <td>${day}</td>
             <td>${dayName}</td>
@@ -128,6 +134,7 @@ function showUserTable(user, month, year) {
             <td><input type="time" class="time-input" placeholder="Enter Out"></td>
             <td><input type="text" class="time-input" readonly></td>
         `;
+
         tableBody.appendChild(row);
     }
 
@@ -140,10 +147,12 @@ function goBack() {
 
 function saveData() {
     console.log('Save data clicked');
+    // Implement logic to save data
 }
 
 function completeUser() {
     console.log('Complete user clicked');
+    // Implement logic to mark user as completed
 }
 
 function applyFastEntry() {
