@@ -1,6 +1,24 @@
 document.addEventListener('DOMContentLoaded', () => {
+    populateMonthSelect();
     updateUserList();
 });
+
+function populateMonthSelect() {
+    const monthSelect = document.getElementById('month');
+    const months = [
+        "January", "February", "March", "April", "May", "June", 
+        "July", "August", "September", "October", "November", "December"
+    ];
+
+    months.forEach((month, index) => {
+        const option = document.createElement('option');
+        option.value = index + 1;
+        option.textContent = month;
+        monthSelect.appendChild(option);
+    });
+
+    monthSelect.value = new Date().getMonth() + 1; // Set current month as default
+}
 
 function updateUserList() {
     const department = document.getElementById('department').value;
@@ -22,95 +40,70 @@ function updateUserList() {
 function getUsersByDepartment(department) {
     const allUsers = {
         BHP: ['Alice', 'Bob', 'Charlie'],
-        HR: ['David', 'Eva', 'Frank'],
-        Finance: ['Grace', 'Henry', 'Ivy'],
-        Sales: ['Jack', 'Kara', 'Leo'],
+        HR: ['David', 'Eve', 'Frank'],
+        Finance: ['Grace', 'Hank', 'Ivy'],
+        Sales: ['Jack', 'Kara', 'Liam'],
         Marketing: ['Mona', 'Nina', 'Oscar']
     };
     return allUsers[department] || [];
 }
 
-function showTable(userBox) {
-    const user = userBox.dataset.user;
-    const tableBody = document.getElementById('tableBody');
-    const month = document.getElementById('month').value;
-    const year = new Date().getFullYear();
-    const daysInMonth = new Date(year, month, 0).getDate();
+function showTable(user) {
+    document.getElementById('selectedUser').textContent = `Selected User: ${user.textContent}`;
+    document.getElementById('userTable').style.display = 'block';
+    generateTable(user.textContent);
+}
 
+function generateTable(user) {
+    const monthSelect = document.getElementById('month');
+    const month = monthSelect.value;
+    const year = new Date().getFullYear();
+
+    const daysInMonth = new Date(year, month, 0).getDate(); // Get the number of days in the month
+    const firstDay = new Date(year, month - 1, 1).getDay(); // Get the day of the week for the 1st of the month
+
+    const tableBody = document.getElementById('tableBody');
     tableBody.innerHTML = '';
 
+    // Create empty cells for days before the start of the month
+    for (let i = 0; i < firstDay; i++) {
+        const emptyCell = document.createElement('tr');
+        emptyCell.innerHTML = `<td></td><td></td><td></td><td></td><td></td>`;
+        tableBody.appendChild(emptyCell);
+    }
+
+    // Create cells for each day in the month
     for (let day = 1; day <= daysInMonth; day++) {
         const date = new Date(year, month - 1, day);
-        const dayOfWeek = date.toLocaleDateString('en-US', { weekday: 'long' });
-        const formattedDate = date.toISOString().split('T')[0];
+        const dayName = date.toLocaleDateString('en-US', { weekday: 'long' });
 
         const row = document.createElement('tr');
         row.innerHTML = `
-            <td>${formattedDate}</td>
-            <td>${dayOfWeek}</td>
-            <td><input type="text" class="time-input in-time" placeholder="e.g., 08:00 AM" /></td>
-            <td><input type="text" class="time-input out-time" placeholder="e.g., 05:00 PM" /></td>
-            <td class="ot-hours">0</td>
+            <td>${day}</td>
+            <td>${dayName}</td>
+            <td><input type="text" class="time-input" placeholder="In Time"></td>
+            <td><input type="text" class="time-input" placeholder="Out Time"></td>
+            <td>0</td>
         `;
         tableBody.appendChild(row);
     }
-
-    document.getElementById('selectedUser').innerText = `Selected User: ${user}`;
-    document.getElementById('userTable').style.display = 'block';
-
-    initializeTimeInputs();
-}
-
-function initializeTimeInputs() {
-    const inTimes = document.querySelectorAll('.in-time');
-    const outTimes = document.querySelectorAll('.out-time');
-
-    inTimes.forEach(input => {
-        input.addEventListener('change', calculateOT);
-    });
-
-    outTimes.forEach(input => {
-        input.addEventListener('change', calculateOT);
-    });
-}
-
-function calculateOT() {
-    const rows = document.querySelectorAll('#tableBody tr');
-
-    rows.forEach(row => {
-        const inTime = row.querySelector('.in-time').value;
-        const outTime = row.querySelector('.out-time').value;
-
-        if (inTime && outTime) {
-            const inTimeDate = new Date(`1970-01-01T${inTime}`);
-            const outTimeDate = new Date(`1970-01-01T${outTime}`);
-            const diff = (outTimeDate - inTimeDate) / (1000 * 60 * 60);
-
-            let otHours = 0;
-            if (outTimeDate > new Date('1970-01-01T15:45:00')) {
-                otHours = diff - 7.75;
-            }
-
-            row.querySelector('.ot-hours').textContent = otHours.toFixed(2);
-        }
-    });
 }
 
 function saveData() {
-    document.getElementById('modal').style.display = 'flex';
+    document.getElementById('modal').style.display = 'block';
+}
+
+function confirmSave() {
+    closeModal();
+    alert('Data saved!');
 }
 
 function closeModal() {
     document.getElementById('modal').style.display = 'none';
 }
 
-function confirmSave() {
-    closeModal();
-    // Implement the save functionality here
-}
-
 function openAddRemoveModal() {
-    document.getElementById('addRemoveModal').style.display = 'flex';
+    document.getElementById('addRemoveModal').style.display = 'block';
 }
 
 function closeAddRemoveModal() {
@@ -118,17 +111,13 @@ function closeAddRemoveModal() {
 }
 
 function addUser() {
-    // Implement add user functionality
+    alert('Add User functionality');
 }
 
 function removeUser() {
-    // Implement remove user functionality
+    alert('Remove User functionality');
 }
 
 function goBack() {
     document.getElementById('userTable').style.display = 'none';
-}
-
-function completeUser() {
-    // Implement complete user functionality
 }
