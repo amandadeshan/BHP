@@ -1,5 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
     populateMonthSelect();
+    populateYearSelect();
     populateDepartmentSelect();
     updateUserList(); // Initialize with default selections
 });
@@ -16,6 +17,17 @@ function populateMonthSelect() {
         option.textContent = month;
         monthSelect.appendChild(option);
     });
+}
+
+function populateYearSelect() {
+    const yearSelect = document.getElementById('year');
+    const currentYear = new Date().getFullYear();
+    for (let year = currentYear - 10; year <= currentYear + 10; year++) {
+        const option = document.createElement('option');
+        option.value = year;
+        option.textContent = year;
+        yearSelect.appendChild(option);
+    }
 }
 
 function populateDepartmentSelect() {
@@ -63,6 +75,7 @@ function removeUser() {
 
 function updateUserList() {
     const month = document.getElementById('month').value;
+    const year = document.getElementById('year').value;
     const department = document.getElementById('department').value;
     const userList = document.getElementById('userList');
 
@@ -84,13 +97,42 @@ function updateUserList() {
         const userDiv = document.createElement('div');
         userDiv.className = 'user-box';
         userDiv.textContent = user.name;
-        userDiv.onclick = () => showUserTable(user);
+        userDiv.onclick = () => showUserTable(user, month, year);
         userList.appendChild(userDiv);
     });
 }
 
-function showUserTable(user) {
-    document.getElementById('selectedUser').textContent = `User: ${user.name}`;
+function showUserTable(user, month, year) {
+    const selectedUser = document.getElementById('selectedUser');
+    selectedUser.textContent = `User: ${user.name}`;
+
+    // Generate dates for the selected month and year
+    const tableBody = document.getElementById('tableBody');
+    tableBody.innerHTML = ''; // Clear existing table rows
+
+    const daysInMonth = new Date(year, month, 0).getDate();
+    const monthNames = [
+        "January", "February", "March", "April", "May", "June", 
+        "July", "August", "September", "October", "November", "December"
+    ];
+
+    for (let day = 1; day <= daysInMonth; day++) {
+        const date = new Date(year, month - 1, day);
+        const dayName = date.toLocaleDateString('en-US', { weekday: 'long' });
+
+        const row = document.createElement('tr');
+
+        row.innerHTML = `
+            <td>${day}</td>
+            <td>${dayName}</td>
+            <td><input type="text" class="time-input"></td>
+            <td><input type="text" class="time-input"></td>
+            <td><input type="text" class="time-input"></td>
+        `;
+
+        tableBody.appendChild(row);
+    }
+
     document.getElementById('userList').style.display = 'none';
     document.querySelector('.controls').style.display = 'none';
     document.getElementById('userTable').style.display = 'block';
@@ -114,4 +156,5 @@ function goBack() {
 
 // Add event listeners for selection changes
 document.getElementById('month').addEventListener('change', updateUserList);
+document.getElementById('year').addEventListener('change', updateUserList);
 document.getElementById('department').addEventListener('change', updateUserList);
