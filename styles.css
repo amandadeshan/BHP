@@ -90,42 +90,41 @@ button:hover {
 
 /* Table container styling */
 .table-container {
-    display: none; /* Hidden by default; shown when a user is selected */
+    display: block; /* Ensure the table container is visible */
     background-color: #fff;
     border-radius: 8px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     padding: 20px;
+    overflow-x: auto; /* Allows horizontal scrolling if needed */
 }
 
-/* Table styling */
 table {
     width: 100%;
     border-collapse: collapse;
 }
+
 th, td {
     padding: 12px;
     text-align: left;
     border-bottom: 1px solid #ddd;
 }
+
 th {
     background-color: #007bff;
     color: #fff;
 }
-td {
-    background-color: #fff;
-}
-tr:nth-child(even) {
-    background-color: #f9f9f9;
-}
+
 input.time-input {
     width: 100%;
     padding: 8px;
     box-sizing: border-box;
 }
+
 .table-footer {
     text-align: center;
     margin-top: 20px;
 }
+
 
 /* Modal styling */
 .modal {
