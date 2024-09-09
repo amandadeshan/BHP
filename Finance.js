@@ -1,31 +1,30 @@
-// Finance.js
+// Function to calculate OT for Finance department
+function calculateOT(inTime, outTime) {
+    // Parse the input times to numbers
+    const inHours = parseFloat(inTime);
+    const outHours = parseFloat(outTime);
 
-function calculateFinanceOT(inTime, outTime, day) {
-    const regularEnd = new Date(`1970-01-01T15:00:00`);
-    const overtimeEnd = new Date(`1970-01-01T17:00:00`);
-
-    let overtimeHours = 0;
-
-    if (day === 6 || day === 0 || isHoliday(new Date())) {
-        const inDate = new Date(`1970-01-01T${inTime}`);
-        const outDate = new Date(`1970-01-01T${outTime}`);
-        
-        if (inDate < regularEnd) {
-            inDate.setTime(regularEnd.getTime());
-        }
-        if (outDate > overtimeEnd) {
-            outDate.setTime(overtimeEnd.getTime());
-        }
-
-        if (inDate < outDate) {
-            overtimeHours = (outDate - inDate) / (1000 * 60 * 60);
-        }
+    // Ensure valid input
+    if (isNaN(inHours) || isNaN(outHours) || inHours >= outHours) {
+        return 0;
     }
 
-    return overtimeHours;
+    // Calculate OT
+    return (outHours - inHours) * 3; // OT formula
 }
 
-function isHoliday(date) {
-    // Placeholder for actual holiday logic
-    return false;
+// Function to apply the OT calculation to all rows in the Finance table
+function applyFinanceOTCalculation() {
+    const tableBody = document.getElementById('tableBody');
+    const rows = tableBody.querySelectorAll('tr');
+
+    rows.forEach(row => {
+        const inInput = row.querySelector('td:nth-child(3) input').value;
+        const outInput = row.querySelector('td:nth-child(4) input').value;
+        const otInput = row.querySelector('td:nth-child(5) input');
+
+        // Calculate OT and update the OT input field
+        const ot = calculateOT(inInput, outInput);
+        otInput.value = ot.toFixed(2); // Display OT with 2 decimal places
+    });
 }
