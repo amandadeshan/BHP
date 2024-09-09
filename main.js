@@ -110,34 +110,29 @@ function generateTable(user) {
 }
 
 function formatTimeInput(event) {
-    let value = event.target.value.toUpperCase().replace(/[^0-9APM/]/g, ''); // Remove invalid characters
-    let hours, minutes, period = 'AM';
+    let value = event.target.value;
+    if (!/^\d{1,4}$/.test(value)) return; // Only allow up to 4 digits
 
-    // Split the input into parts
-    let parts = value.split('/');
-    if (parts.length >= 2) {
-        hours = parts[0];
-        minutes = parts[1];
-        if (parts.length === 3 && (parts[2] === 'AM' || parts[2] === 'PM')) {
-            period = parts[2];
-        }
+    let hours, minutes, period;
 
-        // Adjust hours and minutes
-        hours = parseInt(hours, 10);
-        minutes = parseInt(minutes, 10);
-
-        if (isNaN(hours)) hours = 0;
-        if (isNaN(minutes)) minutes = 0;
-        if (minutes >= 60) minutes = 59; // Max minutes
-
-        if (hours > 12) hours = 12; // Max hours in 12-hour format
-        if (hours === 0) hours = 12; // Midnight is 12:00 AM
-
-        // Format time
-        event.target.value = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')} ${period}`;
+    if (value.length <= 2) {
+        // e.g., 8 or 23
+        hours = parseInt(value, 10);
+        minutes = 0;
+        period = 'AM';
     } else {
-        event.target.value = '';
+        // e.g., 823 or 1534
+        hours = parseInt(value.slice(0, -2), 10);
+        minutes = parseInt(value.slice(-2), 10);
+        period = hours >= 12 ? 'PM' : 'AM';
     }
+
+    if (hours > 12) hours -= 12;
+    if (hours === 0) hours = 12; // Midnight or Noon
+
+    if (minutes >= 60) minutes = 59; // Max minutes
+
+    event.target.value = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')} ${period}`;
 }
 
 function saveData() {
