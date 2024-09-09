@@ -1,6 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     populateMonthSelect();
-    updateUserList();
+    populateDepartmentSelect();
+    updateUserList(); // Initialize with default selections
 });
 
 function populateMonthSelect() {
@@ -15,6 +16,10 @@ function populateMonthSelect() {
         option.textContent = month;
         monthSelect.appendChild(option);
     });
+}
+
+function populateDepartmentSelect() {
+    // Future implementation if you need to populate departments dynamically
 }
 
 function openAddRemoveModal() {
@@ -57,8 +62,38 @@ function removeUser() {
 }
 
 function updateUserList() {
-    // Update user list based on selected month and department
-    console.log('Update user list');
+    const month = document.getElementById('month').value;
+    const department = document.getElementById('department').value;
+    const userList = document.getElementById('userList');
+
+    // Clear existing user list
+    userList.innerHTML = '';
+
+    // Example user data - this should be replaced with actual data fetching logic
+    const users = [
+        { name: "John Doe", department: "HR" },
+        { name: "Jane Smith", department: "Finance" },
+        { name: "Robert Johnson", department: "Sales" },
+        { name: "Emily Davis", department: "Marketing" }
+    ];
+
+    // Filter users based on selected department
+    const filteredUsers = users.filter(user => user.department === department);
+
+    filteredUsers.forEach(user => {
+        const userDiv = document.createElement('div');
+        userDiv.className = 'user-box';
+        userDiv.textContent = user.name;
+        userDiv.onclick = () => showUserTable(user);
+        userList.appendChild(userDiv);
+    });
+}
+
+function showUserTable(user) {
+    document.getElementById('selectedUser').textContent = `User: ${user.name}`;
+    document.getElementById('userList').style.display = 'none';
+    document.querySelector('.controls').style.display = 'none';
+    document.getElementById('userTable').style.display = 'block';
 }
 
 function saveData() {
@@ -76,3 +111,7 @@ function goBack() {
     document.querySelector('.controls').style.display = 'block';
     document.querySelector('.user-list').style.display = 'flex';
 }
+
+// Add event listeners for selection changes
+document.getElementById('month').addEventListener('change', updateUserList);
+document.getElementById('department').addEventListener('change', updateUserList);
