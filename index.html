@@ -1,20 +1,87 @@
-<div id="userTable" class="table-container">
-    <div id="tableHeader" class="table-header"></div>
-    <table>
-        <thead>
-            <tr>
-                <th>Date</th>
-                <th>Day</th>
-                <th>In</th>
-                <th>Out</th>
-                <th>OT</th>
-            </tr>
-        </thead>
-        <tbody id="tableBody"></tbody>
-    </table>
-    <div class="table-footer">
-        <button onclick="goBack()">Exit Table</button>
-        <button onclick="saveData()">Save</button>
-        <button onclick="completeUser()">Completed</button>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OT Calculation</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="background"></div>
+    <div class="container">
+        <header>
+            <h1>OT Calculation</h1>
+        </header>
+        <div class="controls">
+            <label for="month">Select Month:</label>
+            <select id="month" onchange="updateUserList()">
+                <option value="01">January</option>
+                <option value="02">February</option>
+                <option value="03">March</option>
+                <option value="04">April</option>
+                <option value="05">May</option>
+                <option value="06">June</option>
+                <option value="07">July</option>
+                <option value="08">August</option>
+                <option value="09">September</option>
+                <option value="10">October</option>
+                <option value="11">November</option>
+                <option value="12">December</option>
+            </select>
+
+            <label for="department">Select Department:</label>
+            <select id="department" onchange="updateUserList()">
+                <option value="BHP">BHP</option>
+                <option value="HR">HR</option>
+                <option value="Finance">Finance</option>
+                <option value="Sales">Sales</option>
+                <option value="Marketing">Marketing</option>
+            </select>
+            <button id="addRemoveBtn" onclick="openAddRemoveModal()">Add/Remove</button>
+        </div>
+
+        <div id="userList" class="user-list"></div>
+
+        <div id="userTable" class="table-container">
+            <div id="tableHeader" class="table-header"></div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Day</th>
+                        <th>In</th>
+                        <th>Out</th>
+                        <th>OT</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody"></tbody>
+            </table>
+            <div class="table-footer">
+                <button onclick="goBack()">Exit Table</button>
+                <button onclick="saveData()">Save</button>
+                <button onclick="completeUser()">Completed</button>
+            </div>
+        </div>
+
+        <!-- Modal -->
+        <div id="addRemoveModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <span class="close" onclick="closeAddRemoveModal()">&times;</span>
+                    <h2>Add/Remove Users</h2>
+                </div>
+                <div class="modal-body">
+                    <div id="addRemoveUserList"></div>
+                </div>
+                <div class="modal-footer">
+                    <button onclick="addUser()">Add</button>
+                    <button onclick="removeUser()">Remove</button>
+                    <button onclick="closeAddRemoveModal()">Close</button>
+                </div>
+            </div>
+        </div>
     </div>
-</div>
+
+    <script src="main.js"></script>
+</body>
+</html>
