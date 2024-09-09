@@ -5,399 +5,105 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>OT Calculation</title>
     <style>
-        /* Background Animation */
+        /* Styles */
         body {
             font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            color: #333;
-        }
-        .background {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
-            background: linear-gradient(135deg, #74ebd5, #acb6e5);
-            animation: gradient 15s ease infinite;
-            background-size: 400% 400%;
-        }
-        @keyframes gradient {
-            0% { background-position: 0% 0%; }
-            50% { background-position: 100% 100%; }
-            100% { background-position: 0% 0%; }
-        }
-        h1 {
-            text-align: center;
-            color: #444;
-            margin: 20px 0;
-        }
-        label {
-            font-weight: bold;
-            margin-right: 10px;
-            color: #333;
-        }
-        select {
-            padding: 10px;
-            margin-right: 20px;
-            border: 1px solid #007bff;
-            border-radius: 4px;
-            background-color: #fff;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
         .user-box {
-            background-color: #fff;
-            border: 2px solid #007bff;
-            padding: 15px;
-            margin: 10px 5px;
-            border-radius: 8px;
+            margin: 5px;
+            padding: 10px;
+            border: 1px solid #ccc;
             cursor: pointer;
-            transition: background-color 0.3s, transform 0.3s;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
-        .user-box:hover {
-            background-color: #e7f3ff;
-            transform: scale(1.05);
-        }
-        .completed {
-            border-color: #28a745;
+        .user-box.saved {
             background-color: #d4edda;
         }
-        .saved {
-            border-color: #ffc107;
-            background-color: #fff3cd;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-            background-color: #fff;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            border-radius: 8px;
-            overflow: hidden;
-        }
-        th, td {
-            border: 1px solid #ddd;
-            padding: 10px;
-            text-align: center;
-            color: #333;
-        }
-        th {
-            background-color: #007bff;
-            color: white;
-        }
-        button {
-            margin-top: 15px;
-            padding: 10px 15px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-            font-weight: bold;
-            margin-left: 10px;
-            background-color: #007bff;
-            color: white;
-        }
-        button:hover {
-            background-color: #0056b3;
-            color: #fff;
+        .user-box.completed {
+            background-color: #cce5ff;
         }
         #userTable {
-            margin-top: 30px;
             display: none;
-        }
-        #userList {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
             margin-top: 20px;
         }
-        #tableHeader {
-            text-align: center;
-            margin-top: 20px;
-            color: #333;
-            font-weight: bold;
-        }
-        .modal {
+        #addRemoveModal {
             display: none;
             position: fixed;
-            z-index: 1000;
-            left: 0;
             top: 0;
+            left: 0;
             width: 100%;
             height: 100%;
-            overflow: auto;
-            background-color: rgba(0, 0, 0, 0.4);
+            background: rgba(0, 0, 0, 0.5);
             justify-content: center;
             align-items: center;
         }
-        .modal-content {
-            background-color: #fefefe;
-            margin: 15% auto;
+        #addRemoveModal div {
+            background: #fff;
             padding: 20px;
-            border: 1px solid #888;
-            width: 80%;
-            max-width: 600px;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
         }
-        .modal-header {
-            padding: 10px;
-            background: #007bff;
-            color: #fff;
-            border-bottom: 1px solid #ddd;
-            font-size: 18px;
-            border-radius: 8px 8px 0 0;
-        }
-        .modal-body {
-            padding: 20px;
-        }
-        .modal-footer {
-            padding: 10px;
-            text-align: right;
-            border-top: 1px solid #ddd;
-        }
-        .user-list-item {
-            margin-bottom: 10px;
-        }
-        .time-input {
-            width: 100px;
-            text-align: center;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            padding: 5px;
-            background-color: #fff;
-        }
-        .time-input:focus {
-            outline: none;
-            border-color: #007bff;
-            box-shadow: 0 0 4px rgba(0, 123, 255, 0.2);
+        #addRemoveModal button {
+            margin-top: 10px;
         }
     </style>
 </head>
 <body>
-    <div class="background"></div>
-    <h1>OT Calculation</h1>
-    <div style="text-align: center;">
-        <label for="month">Select Month:</label>
-        <select id="month" onchange="showUsers()">
-            <option value="01">January</option>
-            <option value="02">February</option>
-            <option value="03">March</option>
-            <option value="04">April</option>
-            <option value="05">May</option>
-            <option value="06">June</option>
-            <option value="07">July</option>
-            <option value="08">August</option>
-            <option value="09">September</option>
-            <option value="10">October</option>
-            <option value="11">November</option>
-            <option value="12">December</option>
-        </select>
-
-        <label for="department">Select Department:</label>
-        <select id="department" onchange="showUsers()">
-            <option value="BHP">BHP</option>
-            <option value="MLT">MLT</option>
-            <!-- Add other departments here -->
-        </select>
-        <button id="addRemoveBtn" onclick="openAddRemoveModal()">Add/Remove</button>
-    </div>
-
+    <h1>Employee OT Tracker</h1>
+    <label for="month">Select Month:</label>
+    <select id="month">
+        <option value="1">January</option>
+        <option value="2">February</option>
+        <option value="3">March</option>
+        <option value="4">April</option>
+        <option value="5">May</option>
+        <option value="6">June</option>
+        <option value="7">July</option>
+        <option value="8">August</option>
+        <option value="9">September</option>
+        <option value="10">October</option>
+        <option value="11">November</option>
+        <option value="12">December</option>
+    </select>
+    
+    <label for="department">Select Department:</label>
+    <select id="department" onchange="showUsers()">
+        <option value="">--Select Department--</option>
+        <option value="BHP">BHP</option>
+        <option value="MLT">MLT</option>
+        <option value="HR">HR</option>
+        <option value="IT">IT</option>
+        <option value="Finance">Finance</option>
+    </select>
+    
     <div id="userList"></div>
-
-    <div id="userTable">
-        <div id="tableHeader"></div>
-        <table>
-            <thead>
-                <tr>
-                    <th>Date</th>
-                    <th>Day</th>
-                    <th>In</th>
-                    <th>Out</th>
-                    <th>OT</th>
-                </tr>
-            </thead>
-            <tbody id="tableBody"></tbody>
-        </table>
-        <div style="text-align: center;">
-            <button onclick="goBack()">Exit Table</button>
-            <button onclick="saveUser()">Save</button>
-            <button onclick="completeUser()">Completed</button>
+    
+    <table id="userTable">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Day</th>
+                <th>In Time</th>
+                <th>Out Time</th>
+                <th>OT Hours</th>
+            </tr>
+        </thead>
+        <tbody id="tableBody"></tbody>
+    </table>
+    
+    <button onclick="openAddRemoveModal()">Add/Remove User</button>
+    <button onclick="goBack()">Back</button>
+    <button onclick="completeUser()">Complete</button>
+    
+    <div id="addRemoveModal">
+        <div>
+            <h2>Add or Remove Users</h2>
+            <label for="newUser">User Name:</label>
+            <input type="text" id="newUser" placeholder="Enter name">
+            <button onclick="addUser()">Add</button>
+            <button onclick="removeUser()">Remove</button>
+            <button onclick="closeAddRemoveModal()">Close</button>
         </div>
     </div>
 
-    <!-- Modal -->
-    <div id="addRemoveModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <span class="close" onclick="closeAddRemoveModal()">&times;</span>
-                <h2>Add/Remove Users</h2>
-            </div>
-            <div class="modal-body">
-                <div id="addRemoveUserList"></div>
-            </div>
-            <div class="modal-footer">
-                <button onclick="addUser()">Add</button>
-                <button onclick="removeUser()">Remove</button>
-                <button onclick="closeAddRemoveModal()">Close</button>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        let currentUserBox = null;
-        let currentUserData = {}; // To store current user data
-
-        const users = {
-            BHP: ['K.P.I. Malkanthi', 'W.D.R.C.Wijesiri', 'A.M.R.T.Atapaththu', 'N.M.R.Abeynayaka', 'J.M.C.N.Jayasunara', 'K.M.Nihal', 'M.R.Ansifa', 'W.M.S.R.Rajapaksha', 'M.J.J.Mohomed', 'A.C.Naushad', 'V.L.Sampath', 'R.D.B.Sarathchandra'],
-            MLT: ['T.M.A.G.Manoj', 'N.M.K.K.Lokuwela', 'T.K.D.Suresh', 'S.J.P.Yapa', 'K.K.Rathnayaka', 'R.G.D.L.L.Malinda', 'W.W.A.R.Wijesinghe', 'D.K.J.Indika', 'A.A.G.M.U.Serasinghe', 'H.G.W.Karunathilaka']
-            // Add other departments and users here
-        };
-
-        const otRules = {
-            BHP: {
-                startHour: 17, // OT starts at 5 PM
-                endHour: 22,   // OT ends at 10 PM
-                overtimeRate: 1.5 // OT pay rate multiplier
-            }
-        };
-
-        function calculateBHPOT(inTime, outTime) {
-            const rules = otRules.BHP;
-            const startHour = rules.startHour;
-            const endHour = rules.endHour;
-            const overtimeRate = rules.overtimeRate;
-
-            const [inHour, inMinute] = inTime.split(':').map(Number);
-            const [outHour, outMinute] = outTime.split(':').map(Number);
-
-            let inTotalMinutes = inHour * 60 + inMinute;
-            let outTotalMinutes = outHour * 60 + outMinute;
-
-            if (outTotalMinutes < inTotalMinutes) {
-                outTotalMinutes += 24 * 60;
-            }
-
-            let otMinutes = 0;
-
-            if (outHour > startHour) {
-                let otStart = Math.max(inTotalMinutes, startHour * 60);
-                let otEnd = Math.min(outTotalMinutes, endHour * 60);
-                if (otStart < otEnd) {
-                    otMinutes = otEnd - otStart;
-                }
-            }
-
-            let otHours = otMinutes / 60;
-            return otHours * overtimeRate;
-        }
-
-        function showUsers() {
-            const month = document.getElementById('month').value;
-            const department = document.getElementById('department').value;
-            const userList = document.getElementById('userList');
-
-            userList.innerHTML = '';
-            if (users[department]) {
-                users[department].forEach(user => {
-                    const userBox = document.createElement('div');
-                    userBox.className = 'user-box';
-                    userBox.textContent = user;
-                    userBox.onclick = () => selectUser(user);
-                    userBox.dataset.user = user;
-                    userList.appendChild(userBox);
-                });
-            }
-        }
-
-        function selectUser(user) {
-            const table = document.getElementById('userTable');
-            table.style.display = 'block';
-
-            const tableBody = document.getElementById('tableBody');
-            tableBody.innerHTML = '';
-
-            for (let day = 1; day <= 31; day++) {
-                const date = new Date(2024, document.getElementById('month').value - 1, day);
-                if (date.getMonth() !== document.getElementById('month').value - 1) continue; // Skip invalid days
-
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${date.toISOString().split('T')[0]}</td>
-                    <td>${date.toLocaleDateString('en-US', { weekday: 'long' })}</td>
-                    <td><input type="time" class="in-time" /></td>
-                    <td><input type="time" class="out-time" /></td>
-                    <td class="ot-hours">0</td>
-                `;
-                tableBody.appendChild(row);
-            }
-
-            currentUserBox = document.querySelector(`.user-box[data-user="${user}"]`);
-            currentUserData = { month: document.getElementById('month').value, department: document.getElementById('department').value, user: user };
-        }
-
-        function saveUserData(user) {
-            const month = document.getElementById('month').value;
-            const department = document.getElementById('department').value;
-            const userData = JSON.parse(localStorage.getItem('userData')) || {};
-            userData[month] = userData[month] || {};
-            userData[month][department] = userData[month][department] || {};
-            userData[month][department][user] = currentUserData;
-
-            const rows = document.querySelectorAll('#tableBody tr');
-            rows.forEach(row => {
-                const inTime = row.querySelector('.in-time').value;
-                const outTime = row.querySelector('.out-time').value;
-                const otCell = row.querySelector('.ot-hours');
-
-                if (inTime && outTime) {
-                    const ot = calculateBHPOT(inTime, outTime);
-                    otCell.textContent = ot.toFixed(2);
-                } else {
-                    otCell.textContent = '0';
-                }
-            });
-
-            localStorage.setItem('userData', JSON.stringify(userData));
-        }
-
-        function saveUser() {
-            if (currentUserBox) {
-                currentUserBox.classList.add('saved');
-                saveUserData(currentUserBox.dataset.user);
-            }
-        }
-
-        function goBack() {
-            document.getElementById('userTable').style.display = 'none';
-            currentUserBox = null;
-            currentUserData = {};
-        }
-
-        function completeUser() {
-            if (currentUserBox) {
-                currentUserBox.classList.add('completed');
-                saveUser();
-            }
-        }
-
-        function openAddRemoveModal() {
-            document.getElementById('addRemoveModal').style.display = 'flex';
-        }
-
-        function closeAddRemoveModal() {
-            document.getElementById('addRemoveModal').style.display = 'none';
-        }
-
-        function addUser() {
-            // Add user logic
-        }
-
-        function removeUser() {
-            // Remove user logic
-        }
-    </script>
+    <script src="main.js"></script>
 </body>
 </html>
