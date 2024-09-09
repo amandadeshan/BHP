@@ -97,8 +97,8 @@ function generateTable(user) {
         row.innerHTML = `
             <td>${day}</td>
             <td>${dayName}</td>
-            <td><input type="text" class="time-input" placeholder="In"></td>
-            <td><input type="text" class="time-input" placeholder="Out"></td>
+            <td><input type="text" class="time-input" placeholder="In" maxlength="5"></td>
+            <td><input type="text" class="time-input" placeholder="Out" maxlength="5"></td>
             <td class="ot-hours">0</td>
         `;
         tableBody.appendChild(row);
@@ -115,9 +115,14 @@ function formatTimeInput(event) {
     let hours, minutes, period = 'AM';
 
     if (value.length > 0) {
-        // Determine hours
-        hours = value.slice(0, 2) || '00'; // Get first two digits or default to '00'
-        minutes = value.slice(2, 4) || '00'; // Get next two digits or default to '00'
+        // Determine hours and minutes
+        if (value.length <= 2) {
+            hours = value.slice(0, 2);
+            minutes = '00';
+        } else {
+            hours = value.slice(0, 2);
+            minutes = value.slice(2, 4);
+        }
 
         hours = parseInt(hours, 10);
         if (hours >= 12) {
@@ -130,6 +135,7 @@ function formatTimeInput(event) {
             hours = 12; // Midnight is 12:00 AM
         }
 
+        // Format time
         event.target.value = `${hours.toString().padStart(2, '0')}:${minutes.padEnd(2, '0')} ${period}`;
     } else {
         event.target.value = '';
