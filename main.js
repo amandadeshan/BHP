@@ -18,6 +18,7 @@ function populateMonthSelect() {
     });
 
     monthSelect.value = new Date().getMonth() + 1; // Set current month as default
+    monthSelect.addEventListener('change', updateUserList);
 }
 
 function updateUserList() {
@@ -56,20 +57,22 @@ function showTable(user) {
 
 function generateTable(user) {
     const monthSelect = document.getElementById('month');
-    const month = monthSelect.value;
+    const month = parseInt(monthSelect.value, 10);
     const year = new Date().getFullYear();
 
-    const daysInMonth = new Date(year, month, 0).getDate(); // Get the number of days in the month
-    const firstDay = new Date(year, month - 1, 1).getDay(); // Get the day of the week for the 1st of the month
-
+    // Clear the previous table content
     const tableBody = document.getElementById('tableBody');
     tableBody.innerHTML = '';
 
+    // Get the number of days in the selected month
+    const daysInMonth = new Date(year, month, 0).getDate();
+    // Get the day of the week for the 1st of the month
+    const firstDay = new Date(year, month - 1, 1).getDay();
+
     // Create empty cells for days before the start of the month
+    let tr = document.createElement('tr');
     for (let i = 0; i < firstDay; i++) {
-        const emptyCell = document.createElement('tr');
-        emptyCell.innerHTML = `<td></td><td></td><td></td><td></td><td></td>`;
-        tableBody.appendChild(emptyCell);
+        tr.innerHTML += '<td></td>';
     }
 
     // Create cells for each day in the month
@@ -77,15 +80,26 @@ function generateTable(user) {
         const date = new Date(year, month - 1, day);
         const dayName = date.toLocaleDateString('en-US', { weekday: 'long' });
 
-        const row = document.createElement('tr');
-        row.innerHTML = `
-            <td>${day}</td>
-            <td>${dayName}</td>
-            <td><input type="text" class="time-input" placeholder="In Time"></td>
-            <td><input type="text" class="time-input" placeholder="Out Time"></td>
-            <td>0</td>
+        tr.innerHTML += `
+            <td>
+                <div>${day}</div>
+                <div>${dayName}</div>
+                <input type="text" class="time-input" placeholder="In Time">
+                <input type="text" class="time-input" placeholder="Out Time">
+                <div class="ot-hours">0</div>
+            </td>
         `;
-        tableBody.appendChild(row);
+
+        // If the row is full, append it to the table
+        if ((firstDay + day) % 7 === 0) {
+            tableBody.appendChild(tr);
+            tr = document.createElement('tr');
+        }
+    }
+
+    // Append the last row if it has any content
+    if (tr.innerHTML.trim() !== '') {
+        tableBody.appendChild(tr);
     }
 }
 
