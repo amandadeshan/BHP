@@ -53,7 +53,7 @@ function populateDepartmentSelect() {
 }
 
 function updateUserList() {
-    console.log('Update User List called');
+    console.log('updateUserList called');
     const month = document.getElementById('month').value;
     const year = document.getElementById('year').value;
     const department = document.getElementById('department').value;
@@ -73,11 +73,13 @@ function updateUserList() {
             userDiv.onclick = () => showUserTable(user, month, year);
             userList.appendChild(userDiv);
         });
+    } else {
+        console.log('Please select a month, year, and department');
     }
 }
 
 function showUserTable(user, month, year) {
-    console.log(`Show User Table for ${user} - ${month}/${year}`);
+    console.log(`showUserTable called for user: ${user}, month: ${month}, year: ${year}`);
     const selectedUser = document.getElementById('selectedUser');
     selectedUser.textContent = `User: ${user}`;
 
@@ -109,4 +111,19 @@ function showUserTable(user, month, year) {
 
 function goBack() {
     document.getElementById('userTable').style.display = 'none';
+}
+
+function applyFastEntry() {
+    const fastIn = document.getElementById('fastIn').value;
+    const fastOut = document.getElementById('fastOut').value;
+
+    if (fastIn && fastOut) {
+        const timeInputs = document.querySelectorAll('#tableBody .time-input');
+        timeInputs.forEach((input, index) => {
+            if (index % 3 === 0) input.value = fastIn; // Set In Time
+            else if (index % 3 === 1) input.value = fastOut; // Set Out Time
+        });
+    } else {
+        alert('Please select both In and Out times.');
+    }
 }
