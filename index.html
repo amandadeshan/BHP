@@ -34,7 +34,8 @@
 
         <div id="userTable" class="table-container" style="display: none;">
             <div id="selectedUser" class="table-header"></div>
-
+            
+            <!-- Fast Entry Section -->
             <div class="fast-entry">
                 <label for="fastIn">Fast Entry - In Time:</label>
                 <input type="time" id="fastIn" placeholder="Select In Time">
@@ -66,18 +67,23 @@
         <div id="addRemoveModal" class="modal">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h2>Add/Remove Users</h2>
                     <span class="close" onclick="closeAddRemoveModal()">&times;</span>
+                    <h2>Add/Remove Users</h2>
                 </div>
-                <div id="addRemoveUserList" class="user-list"></div>
+                <div class="modal-body">
+                    <div id="addRemoveUserList"></div>
+                </div>
                 <div class="modal-footer">
-                    <button onclick="addUser()">Add User</button>
-                    <button onclick="removeUser()">Remove User</button>
+                    <button onclick="addUser()">Add</button>
+                    <button onclick="removeUser()">Remove</button>
+                    <button onclick="closeAddRemoveModal()">Close</button>
                 </div>
             </div>
         </div>
     </div>
 
     <script src="main.js"></script>
+    <script src="office-do.js"></script>
+    <script src="mo.js"></script>
 </body>
 </html>
