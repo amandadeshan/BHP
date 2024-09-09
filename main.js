@@ -25,6 +25,10 @@ document.addEventListener('DOMContentLoaded', () => {
     populateYearSelect();
     populateDepartmentSelect();
     updateUserList(); // Initialize with default selections
+
+    // Add event listeners for dropdown changes
+    document.getElementById('month').addEventListener('change', updateUserList);
+    document.getElementById('department').addEventListener('change', updateUserList);
 });
 
 function populateMonthSelect() {
@@ -104,7 +108,6 @@ function removeUser() {
 
 function updateUserList() {
     const month = document.getElementById('month').value;
-    const year = document.getElementById('year').value;
     const department = document.getElementById('department').value;
     const userList = document.getElementById('userList');
 
@@ -118,12 +121,12 @@ function updateUserList() {
         const userDiv = document.createElement('div');
         userDiv.className = 'user-box';
         userDiv.textContent = user;
-        userDiv.onclick = () => showUserTable(user, month, year);
+        userDiv.onclick = () => showUserTable(user, month);
         userList.appendChild(userDiv);
     });
 }
 
-function showUserTable(user, month, year) {
+function showUserTable(user, month) {
     const selectedUser = document.getElementById('selectedUser');
     selectedUser.textContent = `User: ${user}`;
 
@@ -131,6 +134,7 @@ function showUserTable(user, month, year) {
     const tableBody = document.getElementById('tableBody');
     tableBody.innerHTML = ''; // Clear existing table rows
 
+    const year = document.getElementById('year').value;
     const daysInMonth = new Date(year, month, 0).getDate();
     const monthNames = [
         "January", "February", "March", "April", "May", "June", 
