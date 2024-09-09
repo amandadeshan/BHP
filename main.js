@@ -1,3 +1,19 @@
+// Sample data for users by department
+const usersByDepartment = {
+    "OFFICE/DO": [
+        "Alice Johnson",
+        "Bob Smith",
+        "Charlie Davis",
+        "David Wilson"
+    ],
+    "MO": [
+        "Emily Clark",
+        "Frank Lewis",
+        "Grace Martinez",
+        "Henry Anderson"
+    ]
+};
+
 document.addEventListener('DOMContentLoaded', () => {
     populateMonthSelect();
     populateYearSelect();
