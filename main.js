@@ -49,10 +49,10 @@ function getUsersByDepartment(department) {
     return allUsers[department] || [];
 }
 
-function showTable(user) {
-    document.getElementById('selectedUser').textContent = Selected User: ${user.textContent};
+function showTable(userBox) {
+    document.getElementById('selectedUser').textContent = `Selected User: ${userBox.textContent}`;
     document.getElementById('userTable').style.display = 'block';
-    generateTable(user.textContent);
+    generateTable(userBox.textContent);
 }
 
 function generateTable(user) {
@@ -80,7 +80,7 @@ function generateTable(user) {
         const date = new Date(year, month - 1, day);
         const dayName = date.toLocaleDateString('en-US', { weekday: 'long' });
 
-        tr.innerHTML += 
+        tr.innerHTML += `
             <td>
                 <div>${day}</div>
                 <div>${dayName}</div>
@@ -88,7 +88,7 @@ function generateTable(user) {
                 <input type="text" class="time-input" placeholder="Out Time">
                 <div class="ot-hours">0</div>
             </td>
-        ;
+        `;
 
         // If the row is full, append it to the table
         if ((firstDay + day) % 7 === 0) {
@@ -134,4 +134,4 @@ function removeUser() {
 
 function goBack() {
     document.getElementById('userTable').style.display = 'none';
-}                                                                       
+}
