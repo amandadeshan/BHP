@@ -10,15 +10,9 @@ function populateMonthSelect() {
         "July", "August", "September", "October", "November", "December"
     ];
 
-    // Clear existing options
-    monthSelect.innerHTML = '';
-
-    months.forEach((month, index) => {
-        const option = document.createElement('option');
-        option.value = index + 1;
-        option.textContent = month;
-        monthSelect.appendChild(option);
-    });
+    monthSelect.innerHTML = months.map((month, index) => 
+        `<option value="${index + 1}">${month}</option>`
+    ).join('');
 
     monthSelect.value = new Date().getMonth() + 1; // Set current month as default
     monthSelect.addEventListener('change', updateUserList);
@@ -63,16 +57,13 @@ function generateTable(user) {
     const month = parseInt(monthSelect.value, 10);
     const year = new Date().getFullYear();
 
-    // Clear the previous table content
     const tableBody = document.getElementById('tableBody');
     tableBody.innerHTML = '';
 
-    // Get the table element and thead
     const table = document.querySelector('#userTable table');
     let thead = table.querySelector('thead');
 
     if (!thead) {
-        // Create thead if it doesn't exist
         thead = table.createTHead();
     }
     
@@ -86,7 +77,6 @@ function generateTable(user) {
             <th>OT</th>
         `;
     } else {
-        // Create header row if it doesn't exist
         const newHeaderRow = thead.insertRow();
         newHeaderRow.innerHTML = `
             <th>Date</th>
@@ -97,12 +87,10 @@ function generateTable(user) {
         `;
     }
 
-    // Get the number of days in the selected month
     const daysInMonth = new Date(year, month, 0).getDate();
 
-    // Create rows for each day in the month
     for (let day = 1; day <= daysInMonth; day++) {
-        const date = new Date(year, month - 1, day); // Correct month index
+        const date = new Date(year, month - 1, day);
         const dayName = date.toLocaleDateString('en-US', { weekday: 'long' });
 
         const row = document.createElement('tr');
@@ -114,7 +102,38 @@ function generateTable(user) {
             <td class="ot-hours">0</td>
         `;
         tableBody.appendChild(row);
+
+        // Attach input event listeners for formatting
+        row.querySelectorAll('.time-input').forEach(input => {
+            input.addEventListener('input', formatTimeInput);
+        });
     }
+}
+
+function formatTimeInput(event) {
+    let value = event.target.value;
+
+    // Remove any non-numeric characters (except colon)
+    value = value.replace(/[^0-9:]/g, '');
+
+    // Format the time string
+    let [hours, minutes] = value.split(':');
+    hours = hours ? hours.padStart(2, '0') : '00';
+    minutes = minutes ? minutes.padEnd(2, '0') : '00';
+
+    let period = 'AM';
+    if (parseInt(hours) >= 12) {
+        period = 'PM';
+        if (parseInt(hours) > 12) {
+            hours = (parseInt(hours) - 12).toString().padStart(2, '0');
+        }
+    }
+
+    if (hours === '00') {
+        hours = '12';
+    }
+
+    event.target.value = `${hours}:${minutes} ${period}`;
 }
 
 function saveData() {
