@@ -1,13 +1,11 @@
-// main.js
-
 document.addEventListener('DOMContentLoaded', function() {
-    updateUserList(); // Populate user list on page load
+    updateUserList();
 });
 
 function updateUserList() {
     const department = document.getElementById('department').value;
     const userList = document.getElementById('userList');
-    userList.innerHTML = ''; // Clear the existing user list
+    userList.innerHTML = '';
 
     const users = getUsersByDepartment(department);
 
@@ -22,7 +20,6 @@ function updateUserList() {
 }
 
 function getUsersByDepartment(department) {
-    // Replace this with actual data fetching logic
     const allUsers = {
         BHP: ['Alice', 'Bob', 'Charlie'],
         HR: ['David', 'Eva', 'Frank'],
@@ -110,4 +107,28 @@ function closeModal() {
 function confirmSave() {
     closeModal();
     // Implement the save functionality here
+}
+
+function openAddRemoveModal() {
+    document.getElementById('addRemoveModal').style.display = 'flex';
+}
+
+function closeAddRemoveModal() {
+    document.getElementById('addRemoveModal').style.display = 'none';
+}
+
+function addUser() {
+    // Implement add user functionality
+}
+
+function removeUser() {
+    // Implement remove user functionality
+}
+
+function goBack() {
+    document.getElementById('userTable').style.display = 'none';
+}
+
+function completeUser() {
+    // Implement complete user functionality
 }
