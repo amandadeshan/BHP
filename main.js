@@ -1,4 +1,3 @@
-// Define the users by department
 const usersByDepartment = {
     "OFFICE/DO": ["User1", "User2"],
     "MO": ["User3"]
@@ -24,7 +23,6 @@ function populateMonthSelect() {
         monthSelect.appendChild(option);
     });
 
-    // Add event listener for month change
     monthSelect.addEventListener('change', updateUserList);
 }
 
@@ -38,7 +36,6 @@ function populateYearSelect() {
         yearSelect.appendChild(option);
     }
 
-    // Add event listener for year change
     yearSelect.addEventListener('change', updateUserList);
 }
 
@@ -52,49 +49,11 @@ function populateDepartmentSelect() {
         departmentSelect.appendChild(option);
     });
 
-    // Add event listener for department change
     departmentSelect.addEventListener('change', updateUserList);
 }
 
-function openAddRemoveModal() {
-    document.getElementById('addRemoveModal').style.display = 'block';
-    populateAddRemoveUserList();
-}
-
-function closeAddRemoveModal() {
-    document.getElementById('addRemoveModal').style.display = 'none';
-}
-
-function populateAddRemoveUserList() {
-    const department = document.getElementById('department').value;
-    const users = usersByDepartment[department] || [];
-    const userList = document.getElementById('addRemoveUserList');
-    userList.innerHTML = ''; // Clear previous content
-
-    users.forEach(user => {
-        const userDiv = document.createElement('div');
-        userDiv.className = 'user-box';
-        userDiv.textContent = user;
-        userDiv.onclick = () => selectUser(user);
-        userList.appendChild(userDiv);
-    });
-}
-
-function selectUser(user) {
-    console.log(`Selected user: ${user}`);
-}
-
-function addUser() {
-    console.log('Add user clicked');
-    // Implement logic to add user
-}
-
-function removeUser() {
-    console.log('Remove user clicked');
-    // Implement logic to remove user
-}
-
 function updateUserList() {
+    console.log('Update User List called');
     const month = document.getElementById('month').value;
     const year = document.getElementById('year').value;
     const department = document.getElementById('department').value;
@@ -102,8 +61,11 @@ function updateUserList() {
 
     userList.innerHTML = ''; // Clear existing user list
 
+    console.log(`Month: ${month}, Year: ${year}, Department: ${department}`);
+
     if (department && month && year) {
         const users = usersByDepartment[department] || [];
+        console.log(`Users for ${department}: ${users}`);
         users.forEach(user => {
             const userDiv = document.createElement('div');
             userDiv.className = 'user-box';
@@ -115,6 +77,7 @@ function updateUserList() {
 }
 
 function showUserTable(user, month, year) {
+    console.log(`Show User Table for ${user} - ${month}/${year}`);
     const selectedUser = document.getElementById('selectedUser');
     selectedUser.textContent = `User: ${user}`;
 
@@ -146,29 +109,4 @@ function showUserTable(user, month, year) {
 
 function goBack() {
     document.getElementById('userTable').style.display = 'none';
-}
-
-function saveData() {
-    console.log('Save data clicked');
-    // Implement logic to save data
-}
-
-function completeUser() {
-    console.log('Complete user clicked');
-    // Implement logic to mark user as completed
-}
-
-function applyFastEntry() {
-    const fastIn = document.getElementById('fastIn').value;
-    const fastOut = document.getElementById('fastOut').value;
-
-    if (fastIn && fastOut) {
-        const timeInputs = document.querySelectorAll('#tableBody .time-input');
-        timeInputs.forEach((input, index) => {
-            if (index % 3 === 0) input.value = fastIn; // Set In Time
-            else if (index % 3 === 1) input.value = fastOut; // Set Out Time
-        });
-    } else {
-        alert('Please select both In and Out times.');
-    }
 }
