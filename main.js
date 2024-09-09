@@ -11,6 +11,12 @@ const usersByDepartment = {
         "Frank Lewis",
         "Grace Martinez",
         "Henry Anderson"
+    ],
+    "DOCTORS": [
+        "Dr. John Doe",
+        "Dr. Jane Smith",
+        "Dr. Robert Brown",
+        "Dr. Emily White"
     ]
 };
 
@@ -48,7 +54,7 @@ function populateYearSelect() {
 
 function populateDepartmentSelect() {
     const departmentSelect = document.getElementById('department');
-    const departments = ["OFFICE/DO", "MO"];
+    const departments = ["OFFICE/DO", "MO", "DOCTORS"];
     departments.forEach(department => {
         const option = document.createElement('option');
         option.value = department;
