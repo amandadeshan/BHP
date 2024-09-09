@@ -1,89 +1,162 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OT Calculation</title>
-    <link rel="stylesheet" href="styles.css">
-</head>
-<body>
-    <div class="background"></div>
-    <div class="container">
-        <header>
-            <h1>OT Calculation</h1>
-        </header>
-        <div class="controls">
-            <label for="month">Select Month:</label>
-            <select id="month">
-                <!-- Options will be populated by JavaScript -->
-            </select>
+document.addEventListener('DOMContentLoaded', () => {
+    console.log('DOM loaded');
+    populateMonthSelect();
+    populateYearSelect();
+    populateDepartmentSelect();
+    updateUserList(); // Initialize with default selections
+});
 
-            <label for="year">Select Year:</label>
-            <select id="year">
-                <!-- Options will be populated by JavaScript -->
-            </select>
+function populateMonthSelect() {
+    const monthSelect = document.getElementById('month');
+    const months = [
+        "January", "February", "March", "April", "May", "June", 
+        "July", "August", "September", "October", "November", "December"
+    ];
+    months.forEach((month, index) => {
+        const option = document.createElement('option');
+        option.value = index + 1;
+        option.textContent = month;
+        monthSelect.appendChild(option);
+    });
+    console.log('Month select populated');
+}
 
-            <label for="department">Select Department:</label>
-            <select id="department">
-                <!-- Options will be populated by JavaScript -->
-            </select>
-            <button id="addRemoveBtn" onclick="openAddRemoveModal()">Add/Remove</button>
-        </div>
+function populateYearSelect() {
+    const yearSelect = document.getElementById('year');
+    const currentYear = new Date().getFullYear();
+    for (let year = currentYear - 10; year <= currentYear + 10; year++) {
+        const option = document.createElement('option');
+        option.value = year;
+        option.textContent = year;
+        yearSelect.appendChild(option);
+    }
+    console.log('Year select populated');
+}
 
-        <div id="userList" class="user-list"></div>
+function populateDepartmentSelect() {
+    const departmentSelect = document.getElementById('department');
+    const departments = ["OFFICE/DO", "MO"];
+    departments.forEach(department => {
+        const option = document.createElement('option');
+        option.value = department;
+        option.textContent = department;
+        departmentSelect.appendChild(option);
+    });
+    departmentSelect.addEventListener('change', () => {
+        console.log('Department changed to:', departmentSelect.value);
+        updateUserList();
+    });
+    console.log('Department select populated');
+}
 
-        <div id="userTable" class="table-container" style="display: none;">
-            <div id="selectedUser" class="table-header"></div>
-            
-            <!-- Fast Entry Section -->
-            <div class="fast-entry">
-                <label for="fastIn">Fast Entry - In Time:</label>
-                <input type="time" id="fastIn" placeholder="Select In Time">
-                <label for="fastOut">Fast Entry - Out Time:</label>
-                <input type="time" id="fastOut" placeholder="Select Out Time">
-                <button onclick="applyFastEntry()">Apply to All Rows</button>
-            </div>
+function openAddRemoveModal() {
+    document.getElementById('addRemoveModal').style.display = 'block';
+    populateAddRemoveUserList();
+}
 
-            <table>
-                <thead>
-                    <tr>
-                        <th>Date</th>
-                        <th>Day</th>
-                        <th>In</th>
-                        <th>Out</th>
-                        <th>OT</th>
-                    </tr>
-                </thead>
-                <tbody id="tableBody"></tbody>
-            </table>
-            <div class="table-footer">
-                <button onclick="goBack()">Exit Table</button>
-                <button onclick="saveData()">Save</button>
-                <button onclick="completeUser()">Completed</button>
-            </div>
-        </div>
+function closeAddRemoveModal() {
+    document.getElementById('addRemoveModal').style.display = 'none';
+}
 
-        <!-- Modal -->
-        <div id="addRemoveModal" class="modal">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <span class="close" onclick="closeAddRemoveModal()">&times;</span>
-                    <h2>Add/Remove Users</h2>
-                </div>
-                <div class="modal-body">
-                    <div id="addRemoveUserList"></div>
-                </div>
-                <div class="modal-footer">
-                    <button onclick="addUser()">Add</button>
-                    <button onclick="removeUser()">Remove</button>
-                    <button onclick="closeAddRemoveModal()">Close</button>
-                </div>
-            </div>
-        </div>
-    </div>
+function populateAddRemoveUserList() {
+    const department = document.getElementById('department').value;
+    console.log('Populating add/remove user list for department:', department);
+    const users = usersByDepartment[department] || [];
+    const userList = document.getElementById('addRemoveUserList');
+    userList.innerHTML = ''; // Clear previous content
 
-    <script src="main.js"></script>
-    <script src="office-do.js"></script>
-    <script src="mo.js"></script>
-</body>
-</html>
+    users.forEach(user => {
+        const userDiv = document.createElement('div');
+        userDiv.className = 'user-box';
+        userDiv.textContent = user;
+        userDiv.onclick = () => selectUser(user);
+        userList.appendChild(userDiv);
+    });
+}
+
+function selectUser(user) {
+    console.log(`Selected user: ${user}`);
+}
+
+function addUser() {
+    console.log('Add user clicked');
+}
+
+function removeUser() {
+    console.log('Remove user clicked');
+}
+
+function updateUserList() {
+    const month = document.getElementById('month').value;
+    const year = document.getElementById('year').value;
+    const department = document.getElementById('department').value;
+    console.log('Updating user list for', { month, year, department });
+
+    const userList = document.getElementById('userList');
+    userList.innerHTML = ''; // Clear existing user list
+
+    const users = usersByDepartment[department] || [];
+    console.log("Users:", users);
+
+    users.forEach(user => {
+        const userDiv = document.createElement('div');
+        userDiv.className = 'user-box';
+        userDiv.textContent = user;
+        userDiv.onclick = () => showUserTable(user, month, year);
+        userList.appendChild(userDiv);
+    });
+}
+
+function showUserTable(user, month, year) {
+    console.log(`Showing table for user: ${user}, Month: ${month}, Year: ${year}`);
+    const selectedUser = document.getElementById('selectedUser');
+    selectedUser.textContent = `User: ${user}`;
+
+    const tableBody = document.getElementById('tableBody');
+    tableBody.innerHTML = ''; // Clear existing table rows
+
+    const daysInMonth = new Date(year, month, 0).getDate();
+    for (let day = 1; day <= daysInMonth; day++) {
+        const date = new Date(year, month - 1, day);
+        const dayName = date.toLocaleDateString('en-US', { weekday: 'long' });
+
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>${day}</td>
+            <td>${dayName}</td>
+            <td><input type="time" class="time-input" placeholder="Enter In"></td>
+            <td><input type="time" class="time-input" placeholder="Enter Out"></td>
+            <td><input type="text" class="time-input" readonly></td>
+        `;
+        tableBody.appendChild(row);
+    }
+
+    document.getElementById('userTable').style.display = 'block';
+}
+
+function goBack() {
+    document.getElementById('userTable').style.display = 'none';
+}
+
+function saveData() {
+    console.log('Save data clicked');
+}
+
+function completeUser() {
+    console.log('Complete user clicked');
+}
+
+function applyFastEntry() {
+    const fastIn = document.getElementById('fastIn').value;
+    const fastOut = document.getElementById('fastOut').value;
+
+    if (fastIn && fastOut) {
+        const timeInputs = document.querySelectorAll('#tableBody .time-input');
+        timeInputs.forEach((input, index) => {
+            if (index % 3 === 0) input.value = fastIn; // Set In Time
+            else if (index % 3 === 1) input.value = fastOut; // Set Out Time
+        });
+    } else {
+        alert('Please select both In and Out times.');
+    }
+}
