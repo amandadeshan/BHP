@@ -241,43 +241,85 @@
     <script type="module">
     let currentUserBox = null;
 
-    async function loadDepartmentScript(department) {
-        switch (department) {
-            case 'BHP':
-                return import('./bhp.js');
-            case 'MLT':
-                return import('./mlt.js');
-            // Add cases for other departments here
-            default:
-                throw new Error('Unknown department');
-        }
-    }
+    // Dummy data for users by department
+    const usersByDepartment = {
+        BHP: ['John Doe', 'Jane Smith', 'Bob Brown'],
+        MLT: ['Alice White', 'Tom Hanks', 'Sarah Connor'],
+        // Add other departments here
+    };
 
-    async function showUsers() {
+    // Function to load users based on the selected department
+    function showUsers() {
         const department = document.getElementById('department').value;
-        const module = await loadDepartmentScript(department);
-        module.showUsers(); // Call the function from the department-specific script
+        const userList = document.getElementById('userList');
+        userList.innerHTML = ''; // Clear the current user list
+
+        // Get the list of users for the selected department
+        const users = usersByDepartment[department] || [];
+
+        // Create a user box for each user
+        users.forEach((user) => {
+            const userBox = document.createElement('div');
+            userBox.classList.add('user-box');
+            userBox.textContent = user;
+
+            // Set up click event to show user details
+        // Set up click event to show user details
+            userBox.onclick = function () {
+                currentUserBox = userBox;  // Store the selected user box
+                showTable(user);  // Show user details in the table
+            };
+
+            userList.appendChild(userBox);  // Append the user box to the user list
+        });
     }
 
+    // Function to display the table with the selected user's details
     function showTable(user) {
-        // Function logic
+        const userTable = document.getElementById('userTable');
+        const tableHeader = document.getElementById('tableHeader');
+        const tableBody = document.getElementById('tableBody');
+
+        tableHeader.textContent = `Overtime Details for ${user}`;
+        tableBody.innerHTML = '';  // Clear the current table body
+
+        // Generate dummy data for the user's overtime records (replace with real data if available)
+        const otData = [
+            { date: '2024-09-01', day: 'Monday', in: '09:00', out: '17:00', ot: '1 hour' },
+            { date: '2024-09-02', day: 'Tuesday', in: '09:00', out: '18:00', ot: '2 hours' },
+            { date: '2024-09-03', day: 'Wednesday', in: '09:00', out: '19:00', ot: '3 hours' }
+        ];
+
+        // Populate the table with overtime data
+        otData.forEach((row) => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td>${row.date}</td>
+                <td>${row.day}</td>
+                <td>${row.in}</td>
+                <td>${row.out}</td>
+                <td>${row.ot}</td>
+            `;
+            tableBody.appendChild(tr);
+        });
+
+        userTable.style.display = 'block';  // Show the table
     }
 
-    function saveUserData(user) {
-        // Function logic
-    }
-
+    // Function to mark the current user as completed
     function completeUser() {
         if (currentUserBox) {
             currentUserBox.classList.add('completed');
-            saveCompletedUser(currentUserBox.dataset.user);
+            saveUserData(currentUserBox.textContent);  // Save the completion status (implement as needed)
         }
     }
 
+    // Function to go back to the user list view
     function goBack() {
         document.getElementById('userTable').style.display = 'none';
     }
 
+    // Modal handling functions for adding/removing users
     function openAddRemoveModal() {
         document.getElementById('addRemoveModal').style.display = 'flex';
     }
@@ -287,15 +329,17 @@
     }
 
     function addUser() {
-        // Functionality for adding user
+        // Add user logic (implement as needed)
+        alert('User added');
     }
 
     function removeUser() {
-        // Functionality for removing user
+        // Remove user logic (implement as needed)
+        alert('User removed');
     }
 
     window.onload = function () {
-        showUsers();
+        showUsers();  // Show users on page load based on default selections
     };
     </script>
 </body>
