@@ -83,10 +83,8 @@ function saveUserData(user) {
         if (inTime && outTime) {
             const date = new Date(row.cells[0].textContent);
             const day = date.getDay();
-            const ot = calculateOT(inTime, outTime, day);
-            otCell.textContent = ot.toFixed(2);
-        } else {
-            otCell.textContent = '0';
+            const otHours = calculateOT(inTime, outTime, day);
+            otCell.textContent = otHours.toFixed(2);
         }
     });
 
@@ -94,14 +92,14 @@ function saveUserData(user) {
 }
 
 function saveUser() {
-    if (currentUserBox) {
-        currentUserBox.classList.add('saved');
-        saveUserData(currentUserBox.dataset.user);
+    if (currentUserData.user) {
+        saveUserData(currentUserData.user);
     }
 }
 
 function goBack() {
     document.getElementById('userTable').style.display = 'none';
+    document.getElementById('userList').innerHTML = '';
     currentUserBox = null;
     currentUserData = {};
 }
@@ -122,9 +120,9 @@ function closeAddRemoveModal() {
 }
 
 function addUser() {
-    // Add user logic
+    // Add user logic here
 }
 
 function removeUser() {
-    // Remove user logic
+    // Remove user logic here
 }
