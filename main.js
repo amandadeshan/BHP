@@ -1,6 +1,6 @@
 // Example user data categorized by department
 const usersByDepartment = {
-    "OFFICE/DO": ["K.P.I.Malkanthi", "W.D.R.C.Wijesiri", "A.M.R.T.Atapaththu", "N.M.R.Abeynayaka", "J.M.C.N.Jayasundara", "K.M.Nihal", "M.R.Ansifa", "W.M.S.R.Rajapaksha", "M.J.J.Mohomed", "A.C.Naushad", "V.L.S.De Mel", "H.M.I.D.Herath", "H.P.U.Manjula", "M.F.M.Fasarath", "L.I.Chandrasekera", "J.D.Jegadhalini", "H.P.D.P.N.Gunathilaka", "S.M.Sacky", "R.R.Shareef", "D.M.M.Diwakara", "H.M.P.Herath", "A.M.Arshath"],
+    "HR": ["John Doe", "Alice Brown"],
     "Finance": ["Jane Smith", "Bob Johnson"],
     "Sales": ["Robert Johnson", "Emily Davis"],
     "Marketing": ["Jessica Lee", "Michael White"]
@@ -131,9 +131,9 @@ function showUserTable(user, month, year) {
         row.innerHTML = `
             <td>${day}</td>
             <td>${dayName}</td>
-            <td><input type="text" class="time-input"></td>
-            <td><input type="text" class="time-input"></td>
-            <td><input type="text" class="time-input"></td>
+            <td><input type="number" class="time-input" step="0.01" placeholder="Enter In"></td>
+            <td><input type="number" class="time-input" step="0.01" placeholder="Enter Out"></td>
+            <td><input type="text" class="time-input" readonly></td>
         `;
 
         tableBody.appendChild(row);
@@ -145,7 +145,14 @@ function showUserTable(user, month, year) {
 }
 
 function saveData() {
-    // Save data logic
+    // Check if the current department is Finance
+    const department = document.getElementById('department').value;
+    if (department === 'Finance') {
+        // Call the Finance-specific OT calculation function
+        applyFinanceOTCalculation();
+    }
+
+    // General save logic
     console.log('Data saved');
 }
 
