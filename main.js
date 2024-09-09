@@ -1,8 +1,3 @@
-const usersByDepartment = {
-    "OFFICE/DO": ["User1", "User2"],
-    "MO": ["User3"]
-};
-
 document.addEventListener('DOMContentLoaded', () => {
     populateMonthSelect();
     populateYearSelect();
@@ -22,8 +17,6 @@ function populateMonthSelect() {
         option.textContent = month;
         monthSelect.appendChild(option);
     });
-
-    monthSelect.addEventListener('change', updateUserList);
 }
 
 function populateYearSelect() {
@@ -35,8 +28,6 @@ function populateYearSelect() {
         option.textContent = year;
         yearSelect.appendChild(option);
     }
-
-    yearSelect.addEventListener('change', updateUserList);
 }
 
 function populateDepartmentSelect() {
@@ -48,38 +39,69 @@ function populateDepartmentSelect() {
         option.textContent = department;
         departmentSelect.appendChild(option);
     });
+}
 
-    departmentSelect.addEventListener('change', updateUserList);
+function openAddRemoveModal() {
+    document.getElementById('addRemoveModal').style.display = 'block';
+    populateAddRemoveUserList();
+}
+
+function closeAddRemoveModal() {
+    document.getElementById('addRemoveModal').style.display = 'none';
+}
+
+function populateAddRemoveUserList() {
+    const department = document.getElementById('department').value;
+    const users = usersByDepartment[department] || [];
+    const userList = document.getElementById('addRemoveUserList');
+    userList.innerHTML = ''; // Clear previous content
+
+    users.forEach(user => {
+        const userDiv = document.createElement('div');
+        userDiv.className = 'user-box';
+        userDiv.textContent = user;
+        userDiv.onclick = () => selectUser(user);
+        userList.appendChild(userDiv);
+    });
+}
+
+function selectUser(user) {
+    // Handle user selection
+    console.log(`Selected user: ${user}`);
+}
+
+function addUser() {
+    // Add user logic
+    console.log('Add user');
+}
+
+function removeUser() {
+    // Remove user logic
+    console.log('Remove user');
 }
 
 function updateUserList() {
-    console.log('updateUserList called');
     const month = document.getElementById('month').value;
     const year = document.getElementById('year').value;
     const department = document.getElementById('department').value;
     const userList = document.getElementById('userList');
 
-    userList.innerHTML = ''; // Clear existing user list
+    // Clear existing user list
+    userList.innerHTML = '';
 
-    console.log(`Month: ${month}, Year: ${year}, Department: ${department}`);
+    // Get users for the selected department
+    const users = usersByDepartment[department] || [];
 
-    if (department && month && year) {
-        const users = usersByDepartment[department] || [];
-        console.log(`Users for ${department}: ${users}`);
-        users.forEach(user => {
-            const userDiv = document.createElement('div');
-            userDiv.className = 'user-box';
-            userDiv.textContent = user;
-            userDiv.onclick = () => showUserTable(user, month, year);
-            userList.appendChild(userDiv);
-        });
-    } else {
-        console.log('Please select a month, year, and department');
-    }
+    users.forEach(user => {
+        const userDiv = document.createElement('div');
+        userDiv.className = 'user-box';
+        userDiv.textContent = user;
+        userDiv.onclick = () => showUserTable(user, month, year);
+        userList.appendChild(userDiv);
+    });
 }
 
 function showUserTable(user, month, year) {
-    console.log(`showUserTable called for user: ${user}, month: ${month}, year: ${year}`);
     const selectedUser = document.getElementById('selectedUser');
     selectedUser.textContent = `User: ${user}`;
 
@@ -88,6 +110,10 @@ function showUserTable(user, month, year) {
     tableBody.innerHTML = ''; // Clear existing table rows
 
     const daysInMonth = new Date(year, month, 0).getDate();
+    const monthNames = [
+        "January", "February", "March", "April", "May", "June", 
+        "July", "August", "September", "October", "November", "December"
+    ];
 
     for (let day = 1; day <= daysInMonth; day++) {
         const date = new Date(year, month - 1, day);
@@ -111,6 +137,16 @@ function showUserTable(user, month, year) {
 
 function goBack() {
     document.getElementById('userTable').style.display = 'none';
+}
+
+function saveData() {
+    // Save data logic
+    console.log('Save data');
+}
+
+function completeUser() {
+    // Complete user logic
+    console.log('Complete user');
 }
 
 function applyFastEntry() {
