@@ -154,12 +154,10 @@ function applyFastEntry() {
     const fastOut = document.getElementById('fastOut').value;
 
     if (fastIn && fastOut) {
-        // Get all "In" and "Out" time inputs in the table
         const timeInputs = document.querySelectorAll('#tableBody .time-input');
-        
         timeInputs.forEach((input, index) => {
-            if (index % 4 === 2) input.value = fastIn; // Set In Time
-            else if (index % 4 === 3) input.value = fastOut; // Set Out Time
+            if (index % 3 === 0) input.value = fastIn; // Set In Time
+            else if (index % 3 === 1) input.value = fastOut; // Set Out Time
         });
     } else {
         alert('Please select both In and Out times.');
