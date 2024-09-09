@@ -102,41 +102,6 @@ button:hover {
     border: 2px solid #007bff; /* Outline border */
 }
 
-/* Fast Entry Section */
-.fast-entry {
-    margin-bottom: 20px;
-    text-align: center;
-}
-
-.fast-entry label {
-    font-weight: bold;
-    margin-right: 10px;
-}
-
-.fast-entry input[type="time"] {
-    padding: 8px;
-    border: 1px solid #007bff;
-    border-radius: 4px;
-    font-size: 16px;
-}
-
-.fast-entry button {
-    padding: 10px 20px;
-    margin-top: 10px;
-    border: none;
-    border-radius: 4px;
-    background-color: #007bff;
-    color: #fff;
-    font-weight: bold;
-    cursor: pointer;
-    transition: background-color 0.3s, transform 0.3s;
-}
-
-.fast-entry button:hover {
-    background-color: #0056b3;
-    transform: translateY(-2px);
-}
-
 /* Table Styling */
 table {
     width: 100%;
@@ -231,27 +196,16 @@ input.time-input {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-bottom: 1px solid #ddd;
-    padding-bottom: 10px;
+    margin-bottom: 20px;
 }
 
-.modal-header h2 {
-    margin: 0;
-}
-
-.modal-header .close {
-    font-size: 1.5em;
+.close {
+    color: #aaa;
+    font-size: 28px;
+    font-weight: bold;
     cursor: pointer;
 }
 
-.modal-body {
-    margin-top: 20px;
-}
-
-.modal-footer {
-    display: flex;
-    justify-content: flex-end;
-    margin-top: 20px;
-    border-top: 1px solid #ddd;
-    padding-top: 10px;
+.close:hover {
+    color: #000;
 }
